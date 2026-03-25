@@ -88,4 +88,26 @@ describe("wallet-analysis extras", () => {
     );
     assert.match(content, /0x[a-fA-F0-9]{40}/);
   });
+
+  it("documents ENS names as supported input", () => {
+    const content = readFileSync(
+      join(skillsDir, "wallet-analysis", "SKILL.md"),
+      "utf8"
+    );
+    assert.match(content, /ENS names also work/i);
+    assert.doesNotMatch(content, /ENS names are not currently supported/i);
+  });
+});
+
+describe("skill guidance consistency", () => {
+  it("documents WALLET_PRIVATE_KEY for x402 in zerion-cli skill", () => {
+    const content = readFileSync(join(skillsDir, "zerion-cli", "SKILL.md"), "utf8");
+    assert.match(content, /WALLET_PRIVATE_KEY/);
+  });
+
+  it("does not claim wallet commands accept more chains than the CLI validator", () => {
+    const content = readFileSync(join(skillsDir, "chains", "SKILL.md"), "utf8");
+    assert.match(content, /currently accepted by the wallet commands/i);
+    assert.doesNotMatch(content, /50\+\s+chains are supported/i);
+  });
 });

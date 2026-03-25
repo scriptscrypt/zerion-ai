@@ -32,17 +32,17 @@ which zerion-cli || npm install -g zerion-cli
 zerion-cli chains list [--x402]
 ```
 
-Returns the full list of supported chains with IDs and metadata.
+Returns the full chain catalog with IDs and metadata.
 
 ## When to use
 
 - User asks "what chains does Zerion support?"
-- You need to validate a chain ID before passing `--chain` to wallet commands
+- You need the current chain catalog before choosing a `--chain` value
 - Looking up chain metadata (name, type, support level)
 
 ## Quick reference (common chain IDs)
 
-These chain IDs work with `--chain` in wallet commands:
+These are the chain IDs currently accepted by the wallet commands in this repo:
 
 | Chain | ID |
 |-------|----|
@@ -61,7 +61,7 @@ These chain IDs work with `--chain` in wallet commands:
 | Zora | `zora` |
 | Blast | `blast` |
 
-50+ chains are supported in total. Run `zerion-cli chains list` for the complete list.
+`zerion-cli chains list` may return a broader catalog. For `wallet positions`, `wallet transactions`, and `wallet analyze`, use the IDs above unless the CLI validator is expanded.
 
 ## Using with wallet commands
 

@@ -53,6 +53,9 @@ Get yours at [dashboard.zerion.io](https://dashboard.zerion.io).
 No API key needed. Pay $0.01 USDC per request on Base via the [x402 protocol](https://www.x402.org/).
 
 ```bash
+# Required for x402 payments
+export WALLET_PRIVATE_KEY="0x..."
+
 # Per-command flag
 zerion-cli wallet analyze <address> --x402
 
@@ -60,13 +63,14 @@ zerion-cli wallet analyze <address> --x402
 export ZERION_X402=true
 ```
 
-The agent's wallet handles payment automatically.
+The agent's wallet handles payment automatically using `WALLET_PRIVATE_KEY`.
 
 ## Environment variables
 
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `ZERION_API_KEY` | Yes (unless x402) | API key from dashboard.zerion.io |
+| `WALLET_PRIVATE_KEY` | Yes (for x402) | EVM private key for the wallet paying x402 requests on Base |
 | `ZERION_X402` | No | Set to `true` to enable x402 pay-per-call globally |
 | `ZERION_API_BASE` | No | Override API base URL (default: `https://api.zerion.io/v1`) |
 
@@ -99,7 +103,8 @@ All commands accept `--x402` for pay-per-call auth.
 | `unsupported_chain` | Invalid `--chain` value | Run `zerion-cli chains list` for valid IDs |
 | `api_error` status 401 | Invalid API key | Check key at dashboard.zerion.io |
 | `api_error` status 429 | Rate limited | Wait, reduce request frequency, or use x402 |
-| `api_error` status 400 | Invalid address format | Use 0x hex address, not ENS name |
+| `api_error` status 400 | Invalid address or ENS resolution failed | Retry with a valid 0x hex address |
+| `unexpected_error` | `WALLET_PRIVATE_KEY` missing in x402 mode | Export the private key or disable x402 |
 | `unexpected_error` | Node.js version too old | Requires Node.js >= 20 |
 
 ## Resources

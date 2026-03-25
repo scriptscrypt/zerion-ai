@@ -1,6 +1,6 @@
 ---
 name: wallet-analysis
-description: "Analyze any crypto wallet: portfolio value, token holdings, DeFi positions, transactions, and PnL. Supports 50+ EVM chains and Solana."
+description: "Analyze any crypto wallet: portfolio value, token holdings, DeFi positions, transactions, and PnL. Supports ENS names and the chain IDs currently accepted by zerion-cli."
 compatibility: "Requires zerion-cli (`npx zerion-cli` or `npm install -g zerion-cli`). Set ZERION_API_KEY or use --x402 for pay-per-call."
 license: MIT
 allowed-tools: Bash
@@ -119,15 +119,15 @@ All output is JSON on stdout. Errors are JSON on stderr with `{ "error": { "code
 
 ## Supported chains
 
-ethereum, base, arbitrum, optimism, polygon, bsc, avalanche, gnosis, scroll, linea, zksync, solana, zora, blast -- and 40+ more EVM chains.
+ethereum, base, arbitrum, optimism, polygon, bsc, avalanche, gnosis, scroll, linea, zksync, solana, zora, blast.
 
-Use `zerion-cli chains list` to see the full list.
+Use `zerion-cli chains list` to inspect the broader chain catalog, but stick to the IDs above for `--chain` unless the CLI validator is expanded.
 
 ## Best practices
 
 1. **Start with `wallet analyze`** -- it fetches everything in parallel and returns a concise summary
 2. **Use individual commands for targeted queries** -- e.g., `wallet positions --positions defi` when the user only cares about DeFi
-3. **Address format**: use 0x hex addresses. ENS names are not currently supported by the API -- resolve them first
+3. **Address format**: prefer 0x hex addresses for deterministic input, but ENS names also work when upstream resolution succeeds
 4. **Chain filter**: use `--chain` to narrow results when the user mentions a specific chain
 5. **Rate limits**: 120 req/min with API key. Use `--x402` as fallback if rate-limited
 
@@ -137,6 +137,6 @@ Use `zerion-cli chains list` to see the full list.
 - **`unsupported_chain`**: Run `zerion-cli chains list` to check valid chain IDs
 - **Empty positions/transactions**: Wallet may be inactive or very new
 - **`api_error` with status 429**: Rate limited -- wait or switch to x402
-- **ENS names fail with 400**: Resolve ENS to a hex address before querying
+- **ENS name fails**: Retry with the resolved 0x address if upstream name resolution is unavailable
 
 For worked examples, see [EXAMPLES.md](EXAMPLES.md).
