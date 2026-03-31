@@ -139,8 +139,9 @@ export function getAgentToken() {
  *   signature: 128 hex chars (r: 64 + s: 64)
  *   recoveryId: 0 or 1 (maps to yParity for EIP-1559)
  */
-export function signEvmTransaction(walletName, unsignedTxHex, passphrase) {
-  return ows.signTransaction(walletName, "evm", unsignedTxHex, passphrase);
+export function signEvmTransaction(walletName, unsignedTxHex, passphrase, caip2ChainId) {
+  const network = caip2ChainId || "evm";
+  return ows.signTransaction(walletName, network, unsignedTxHex, passphrase);
 }
 
 export function signSolanaTransaction(walletName, txHex, passphrase) {

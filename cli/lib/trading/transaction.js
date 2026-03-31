@@ -9,7 +9,7 @@ import {
   encodeFunctionData,
   parseAbi,
 } from "viem";
-import { getViemChain } from "../chain/registry.js";
+import { getViemChain, toCaip2 } from "../chain/registry.js";
 import * as ows from "../wallet/keystore.js";
 
 const ERC20_APPROVE_ABI = parseAbi([
@@ -62,8 +62,8 @@ export async function signSwapTransaction(swapTx, zerionChainId, walletName, pas
   // Serialize unsigned
   const unsignedTxHex = serializeTransaction(tx);
 
-  // Sign with OWS
-  const signResult = ows.signEvmTransaction(walletName, unsignedTxHex, passphrase);
+  // Sign with OWS — pass CAIP-2 chain ID so policies check the correct chain
+  const signResult = ows.signEvmTransaction(walletName, unsignedTxHex, passphrase, toCaip2(zerionChainId));
 
   // Reconstruct signed tx
   const sigHex = signResult.signature;
@@ -144,7 +144,7 @@ export async function approveErc20(tokenAddress, spender, amount, zerionChainId,
   };
 
   const unsignedTxHex = serializeTransaction(tx);
-  const signResult = ows.signEvmTransaction(walletName, unsignedTxHex, passphrase);
+  const signResult = ows.signEvmTransaction(walletName, unsignedTxHex, passphrase, toCaip2(zerionChainId));
 
   const sigHex = signResult.signature;
   const r = `0x${sigHex.slice(0, 64)}`;
