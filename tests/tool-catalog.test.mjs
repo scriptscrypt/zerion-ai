@@ -12,7 +12,10 @@ const EXPECTED_FILES = [
   "wallet-positions.json",
   "wallet-transactions.json",
   "wallet-pnl.json",
-  "chains-list.json"
+  "chains-list.json",
+  "swap.json",
+  "wallet-create.json",
+  "search.json"
 ];
 
 function loadTool(filename) {
@@ -20,16 +23,32 @@ function loadTool(filename) {
 }
 
 describe("tool catalog", () => {
-  it("has all 5 expected tool files", () => {
+  it("has all 8 expected tool files", () => {
     const files = readdirSync(toolsDir).filter((f) => f.endsWith(".json"));
-    assert.equal(files.length, 5);
+    assert.equal(files.length, 8);
     for (const expected of EXPECTED_FILES) {
       assert.ok(files.includes(expected), `Missing tool file: ${expected}`);
     }
   });
 
-  describe("common schema", () => {
-    for (const file of EXPECTED_FILES) {
+  // API tools — full REST schema (kind, method, path, auth, source)
+  const API_TOOLS = [
+    "wallet-portfolio.json",
+    "wallet-positions.json",
+    "wallet-transactions.json",
+    "wallet-pnl.json",
+    "chains-list.json"
+  ];
+
+  // CLI tools — simpler schema (name, description, inputSchema, cli)
+  const CLI_TOOLS = [
+    "swap.json",
+    "wallet-create.json",
+    "search.json"
+  ];
+
+  describe("API tool schema", () => {
+    for (const file of API_TOOLS) {
       describe(file, () => {
         let data;
 
@@ -70,10 +89,30 @@ describe("tool catalog", () => {
     }
   });
 
-  describe("wallet tools", () => {
-    const walletFiles = EXPECTED_FILES.filter((f) => f.startsWith("wallet-"));
+  describe("CLI tool schema", () => {
+    for (const file of CLI_TOOLS) {
+      describe(file, () => {
+        it("is valid JSON with required fields", () => {
+          const data = loadTool(file);
+          assert.equal(typeof data.name, "string");
+          assert.equal(typeof data.description, "string");
+          assert.equal(typeof data.inputSchema, "object");
+          assert.equal(typeof data.cli, "string");
+        });
 
-    for (const file of walletFiles) {
+        it("has name matching filename stem", () => {
+          const data = loadTool(file);
+          const stem = file.replace(".json", "");
+          assert.equal(data.name, stem);
+        });
+      });
+    }
+  });
+
+  describe("wallet API tools", () => {
+    const walletApiFiles = API_TOOLS.filter((f) => f.startsWith("wallet-"));
+
+    for (const file of walletApiFiles) {
       it(`${file} has {address} in path`, () => {
         const data = loadTool(file);
         assert.match(data.path, /\{address\}/);

@@ -8,8 +8,8 @@
     "zerion-cli": "./cli/zerion-cli.js"
   },
   "files": [
-    "cli/*.js",
-    "cli/*.mjs",
+    "cli/**/*.js",
+    "cli/**/*.mjs",
     "README.md",
     "LICENSE"
   ],
@@ -40,8 +40,11 @@
   "homepage": "https://github.com/zeriontech/zerion-ai#readme",
   "license": "MIT",
   "dependencies": {
-    "@x402/fetch": "^2.6.0",
+    "@open-wallet-standard/core": "^1.1.2",
+    "@solana/web3.js": "^1.98.4",
     "@x402/evm": "^2.6.0",
+    "@x402/fetch": "^2.6.0",
+    "qrcode-terminal": "^0.12.0",
     "viem": "^2.0.0"
   }
 }

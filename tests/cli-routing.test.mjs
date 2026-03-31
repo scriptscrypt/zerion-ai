@@ -35,15 +35,17 @@ describe("CLI routing", () => {
       assert.equal(code, 0);
       const json = parseJSON(stdout);
       assert.ok(json);
-      assert.equal(json.name, "zerion-cli");
-      assert.ok(Array.isArray(json.usage));
-      assert.ok(Array.isArray(json.env));
+      assert.ok(json.usage);
+      assert.ok(json.commands);
+      assert.ok(json.flags);
     });
 
     it("shows help with --help (exit 0)", async () => {
       const { code, stdout } = await run(["--help"]);
       assert.equal(code, 0);
-      assert.ok(parseJSON(stdout));
+      const json = parseJSON(stdout);
+      assert.ok(json);
+      assert.ok(json.commands);
     });
 
     it("shows help with -h (exit 0)", async () => {
@@ -51,23 +53,48 @@ describe("CLI routing", () => {
       assert.equal(code, 0);
       assert.ok(parseJSON(stdout));
     });
+
+    it("shows version with --version", async () => {
+      const { code, stdout } = await run(["--version"]);
+      assert.equal(code, 0);
+      assert.match(stdout.trim(), /^\d+\.\d+\.\d+$/);
+    });
+  });
+
+  describe("command routing", () => {
+    it("chains shows chain list (no API key needed)", async () => {
+      const { code, stdout } = await run(["chains"]);
+      assert.equal(code, 0);
+      const json = parseJSON(stdout);
+      assert.ok(json);
+      assert.ok(json.chains);
+      assert.ok(json.count > 0);
+    });
+
+    it("chains list also works", async () => {
+      const { code, stdout } = await run(["chains", "list"]);
+      assert.equal(code, 0);
+      const json = parseJSON(stdout);
+      assert.ok(json);
+      assert.ok(json.chains);
+    });
+
+    it("wallet list shows wallets", async () => {
+      const { code, stdout } = await run(["wallet", "list", "--json"]);
+      assert.equal(code, 0);
+      const json = parseJSON(stdout);
+      assert.ok(json);
+      assert.ok(Array.isArray(json.wallets));
+    });
   });
 
   describe("error routing", () => {
-    it("wallet with no action → help, exit 1", async () => {
-      const { code, stdout } = await run(["wallet"]);
-      assert.equal(code, 1);
-      const json = parseJSON(stdout);
-      assert.ok(json);
-      assert.equal(json.name, "zerion-cli");
-    });
-
-    it("wallet portfolio with no address → missing_wallet, exit 1", async () => {
-      const { code, stderr } = await run(["wallet", "portfolio"]);
+    it("unknown command → error, exit 1", async () => {
+      const { code, stderr } = await run(["foo", "bar"]);
       assert.equal(code, 1);
       const json = parseJSON(stderr);
       assert.ok(json);
-      assert.equal(json.error.code, "missing_wallet");
+      assert.equal(json.error.code, "unknown_command");
     });
 
     it("wallet analyze with no address → missing_wallet, exit 1", async () => {
@@ -78,69 +105,23 @@ describe("CLI routing", () => {
       assert.equal(json.error.code, "missing_wallet");
     });
 
-    it("wallet unknownAction 0xABC → help, exit 1", async () => {
-      const { code, stdout } = await run(["wallet", "unknownAction", "0xABC"]);
-      assert.equal(code, 1);
-      const json = parseJSON(stdout);
-      assert.ok(json);
-      assert.equal(json.name, "zerion-cli");
-    });
-
-    it("chains list without API key → missing_api_key, exit 1", async () => {
-      const { code, stderr } = await run(["chains", "list"]);
+    it("wallet portfolio with no address and no default wallet → no_wallet, exit 1", async () => {
+      // Only fails if no default wallet is configured
+      const { code, stderr } = await run(["wallet", "portfolio"], {
+        HOME: "/tmp/zerion-test-nonexistent",
+      });
       assert.equal(code, 1);
       const json = parseJSON(stderr);
       assert.ok(json);
-      assert.equal(json.error.code, "missing_api_key");
-    });
-
-    it("chains with no action → help, exit 1", async () => {
-      const { code, stdout } = await run(["chains"]);
-      assert.equal(code, 1);
-      const json = parseJSON(stdout);
-      assert.ok(json);
-      assert.equal(json.name, "zerion-cli");
-    });
-
-    it("foo bar → help, exit 1", async () => {
-      const { code, stdout } = await run(["foo", "bar"]);
-      assert.equal(code, 1);
-      const json = parseJSON(stdout);
-      assert.ok(json);
-      assert.equal(json.name, "zerion-cli");
-    });
-
-    it("wallet positions 0xABC --positions (bare) → missing_positions_value, exit 1", async () => {
-      const { code, stderr } = await run(["wallet", "positions", "0xABC", "--positions"]);
-      assert.equal(code, 1);
-      const json = parseJSON(stderr);
-      assert.ok(json);
-      assert.equal(json.error.code, "missing_positions_value");
-    });
-
-    it("wallet positions 0xABC --positions bogus → unsupported_positions_filter, exit 1", async () => {
-      const { code, stderr } = await run(["wallet", "positions", "0xABC", "--positions", "bogus"]);
-      assert.equal(code, 1);
-      const json = parseJSON(stderr);
-      assert.ok(json);
-      assert.equal(json.error.code, "unsupported_positions_filter");
-    });
-
-    it("wallet positions 0xABC --chain invalidchain without API key → missing_api_key", async () => {
-      // ensureKey() runs before validateChain in request(), so missing key errors first
-      const { code, stderr } = await run(["wallet", "positions", "0xABC", "--chain", "ethereum"]);
-      assert.equal(code, 1);
-      const json = parseJSON(stderr);
-      assert.ok(json);
-      assert.equal(json.error.code, "missing_api_key");
+      assert.ok(json.error);
     });
   });
 
   describe("output format", () => {
     it("all error outputs are valid JSON on stderr", async () => {
       const errorCases = [
-        ["wallet", "portfolio"],         // missing_wallet
-        ["chains", "list"],              // missing_api_key
+        ["wallet", "analyze"],         // missing_wallet
+        ["foo", "bar"],                // unknown_command
       ];
 
       for (const args of errorCases) {
@@ -157,9 +138,9 @@ describe("CLI routing", () => {
       const { stdout } = await run([]);
       const json = parseJSON(stdout);
       assert.ok(json);
-      assert.ok(json.name);
       assert.ok(json.usage);
-      assert.ok(json.env);
+      assert.ok(json.commands);
+      assert.ok(json.flags);
     });
   });
 });

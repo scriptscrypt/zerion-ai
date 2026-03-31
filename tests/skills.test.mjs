@@ -8,7 +8,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 const skillsDir = join(ROOT, "skills");
 
-const EXPECTED_SKILLS = ["wallet-analysis", "chains", "zerion-cli"];
+const EXPECTED_SKILLS = ["wallet-analysis", "wallet-trading", "chains", "zerion-cli"];
 
 const REQUIRED_FRONTMATTER = ["name", "description", "license", "allowed-tools"];
 

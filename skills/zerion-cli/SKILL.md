@@ -1,6 +1,6 @@
 ---
 name: zerion-cli
-description: "Install, configure, and troubleshoot the Zerion CLI for crypto wallet data. Use when setting up authentication, checking CLI status, or debugging connection issues. For actual wallet queries, use the wallet-analysis skill."
+description: "Install, configure, and troubleshoot the Zerion CLI for wallet analysis and trading. Use when setting up authentication, checking CLI status, or debugging connection issues. For wallet queries use wallet-analysis; for trading use wallet-trading."
 compatibility: "Requires Node.js >= 20."
 license: MIT
 allowed-tools: Bash
@@ -20,7 +20,7 @@ metadata:
 
 Setup, authentication, and troubleshooting for zerion-cli.
 
-**For wallet analysis, use the `wallet-analysis` skill instead.**
+**For wallet analysis, use the `wallet-analysis` skill. For trading, use `wallet-trading`.**
 
 ## Installation
 
@@ -72,6 +72,7 @@ The agent's wallet handles payment automatically using `WALLET_PRIVATE_KEY`.
 | `ZERION_API_KEY` | Yes (unless x402) | API key from dashboard.zerion.io |
 | `WALLET_PRIVATE_KEY` | Yes (for x402) | EVM private key for the wallet paying x402 requests on Base |
 | `ZERION_X402` | No | Set to `true` to enable x402 pay-per-call globally |
+| `ZERION_AGENT_TOKEN` | No | Agent token for unattended trading (bypasses passphrase) |
 | `ZERION_API_BASE` | No | Override API base URL (default: `https://api.zerion.io/v1`) |
 
 ## CLI help
@@ -84,16 +85,56 @@ Returns JSON with all available commands, env vars, and x402 info.
 
 ## Available commands
 
+### Wallet management
+```
+zerion-cli wallet create --name <name>           # Create new wallet
+zerion-cli wallet import --name <name> --key     # Import from private key
+zerion-cli wallet import --name <name> --mnemonic # Import from seed phrase
+zerion-cli wallet list                           # List all wallets
+zerion-cli wallet fund                           # Show deposit addresses
+zerion-cli wallet export --wallet <name>         # Export recovery phrase
+```
+
+### Read (wallet analysis)
 ```
 zerion-cli wallet analyze <address>       # Full wallet analysis
 zerion-cli wallet portfolio <address>     # Portfolio overview
 zerion-cli wallet positions <address>     # Token + DeFi positions
 zerion-cli wallet transactions <address>  # Transaction history
 zerion-cli wallet pnl <address>           # Profit and loss
-zerion-cli chains list                    # Supported chains
 ```
 
-All commands accept `--x402` for pay-per-call auth.
+### Trading
+```
+zerion-cli swap <from> <to> <amount>      # Swap tokens (quote)
+zerion-cli swap <from> <to> <amount> --yes # Execute swap
+zerion-cli bridge <token> <chain> <amount> # Bridge cross-chain
+zerion-cli buy <token> <amount>            # Buy with ETH
+zerion-cli sell <token> <amount>           # Sell for ETH
+zerion-cli search <query>                  # Search for tokens
+zerion-cli chains list                     # Supported chains
+```
+
+### Agent tokens & policies
+```
+zerion-cli agent create-token --name <bot> --wallet <wallet>
+zerion-cli agent list-tokens
+zerion-cli agent revoke-token --name <bot>
+zerion-cli agent create-policy --name <policy> --chains <list>
+zerion-cli agent list-policies
+zerion-cli agent show-policy <id>
+zerion-cli agent delete-policy <id>
+```
+
+### Other
+```
+zerion-cli export --wallet <name>          # QR code for Zerion app
+zerion-cli watch <address> --name <label>  # Watchlist
+zerion-cli analyze <name|address>          # Trading analysis
+zerion-cli config set|get|list             # Configuration
+```
+
+Read commands accept `--x402` for pay-per-call auth.
 
 ## Troubleshooting
 
