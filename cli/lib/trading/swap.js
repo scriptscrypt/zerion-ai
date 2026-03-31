@@ -78,8 +78,8 @@ export async function getSwapQuote({
       );
       if (impl?.address) chainTokenAddress = impl.address;
     }
-  } catch {
-    // Fall back to resolved address if fungible lookup fails
+  } catch (err) {
+    process.stderr.write(`Warning: fungible lookup failed, using resolved address: ${err.message}\n`);
   }
 
   return {

@@ -63,8 +63,11 @@ export function resolveWallet(flags, args = []) {
       address = ows.getEvmAddress(walletName);
     }
     return { walletName, address };
-  } catch {
-    printError("wallet_not_found", `Wallet "${walletName}" not found`, {
+  } catch (err) {
+    const code = err.message?.includes("not found") ? "wallet_not_found" : "ows_error";
+    printError(code, code === "wallet_not_found"
+      ? `Wallet "${walletName}" not found`
+      : `Wallet error: ${err.message}`, {
       suggestion: "List wallets with: zerion wallet list",
     });
     process.exit(1);

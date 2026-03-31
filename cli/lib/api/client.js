@@ -41,7 +41,7 @@ export async function fetchAPI(pathname, params = {}, useX402 = false) {
   try {
     payload = text ? JSON.parse(text) : null;
   } catch {
-    payload = null;
+    payload = { _rawText: text.slice(0, 500) };
   }
 
   if (!response.ok) {

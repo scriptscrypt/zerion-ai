@@ -127,8 +127,9 @@ export async function approveErc20(tokenAddress, spender, amount, zerionChainId,
     });
     // Add 20% buffer
     gasEstimate = (gasEstimate * 120n) / 100n;
-  } catch {
-    gasEstimate = 100000n; // Safe fallback
+  } catch (err) {
+    process.stderr.write(`Warning: gas estimation failed, using 100000 fallback: ${err.message}\n`);
+    gasEstimate = 100000n;
   }
 
   const tx = {

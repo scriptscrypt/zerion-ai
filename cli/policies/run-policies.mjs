@@ -46,8 +46,8 @@ async function runPolicy(script, ctx, inputJson) {
     if (typeof mod.check === "function") {
       return await withTimeout(Promise.resolve(mod.check(ctx)), POLICY_TIMEOUT_MS);
     }
-  } catch {
-    // Import failed — fall through to legacy child process execution
+  } catch (err) {
+    if (err.code !== "ERR_MODULE_NOT_FOUND" && err.code !== "MODULE_NOT_FOUND") throw err;
   }
   return runLegacyScript(script, inputJson);
 }

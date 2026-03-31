@@ -38,7 +38,8 @@ function generateName() {
   try {
     const existing = ows.listWallets();
     return `wallet-${existing.length + 1}`;
-  } catch {
+  } catch (err) {
+    process.stderr.write(`Warning: could not list wallets: ${err.message}\n`);
     return "wallet-1";
   }
 }
