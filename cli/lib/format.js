@@ -51,13 +51,19 @@ export function shortenScriptPaths(scripts) {
 // --- Pretty-print formatters ---
 
 export function formatWalletList(data) {
-  const lines = [`${BOLD}Wallets${RESET} (${data.count})\n`];
+  const showing = data.total !== data.count
+    ? `showing ${data.offset + 1}–${data.offset + data.count} of ${data.total}`
+    : `${data.total}`;
+  const lines = [`${BOLD}Wallets${RESET} (${showing})\n`];
   for (const w of data.wallets) {
     const def = w.isDefault ? ` ${CYAN}(default)${RESET}` : "";
     lines.push(`  ${BOLD}${w.name}${RESET}${def}`);
     lines.push(`  ${DIM}EVM:${RESET} ${w.evmAddress}`);
     if (w.solAddress) lines.push(`  ${DIM}SOL:${RESET} ${w.solAddress}`);
     lines.push("");
+  }
+  if (data.hasMore) {
+    lines.push(`  ${DIM}Use --offset ${data.offset + data.limit} to see more${RESET}\n`);
   }
   return lines.join("\n");
 }

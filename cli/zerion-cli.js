@@ -20,11 +20,13 @@ import walletImport from "./commands/wallet-import.js";
 import walletList from "./commands/wallet-list.js";
 import walletFund from "./commands/wallet-fund.js";
 import walletExport from "./commands/wallet-export.js";
+import walletDelete from "./commands/wallet-delete.js";
 register("wallet", "create", walletCreate);
 register("wallet", "import", walletImport);
 register("wallet", "list", walletList);
 register("wallet", "fund", walletFund);
 register("wallet", "export", walletExport);
+register("wallet", "delete", walletDelete);
 
 // --- Wallet read features (portfolio, positions, PnL, history, analyze) ---
 

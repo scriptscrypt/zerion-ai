@@ -28,6 +28,7 @@ function printUsage() {
       "wallet list": "List all wallets",
       "wallet fund": "Show deposit addresses for funding",
       "wallet export --wallet <name>": "Export wallet mnemonic (recovery phrase)",
+      "wallet delete <name>": "Permanently delete a wallet (requires passphrase)",
     },
     wallet_analysis: {
       "wallet analyze <address>": "Full analysis (portfolio, positions, txs, PnL in parallel)",
@@ -81,7 +82,9 @@ function printUsage() {
       "--chain <chain>": "Specify chain (default: ethereum)",
       "--to-chain <chain>": "Destination chain for cross-chain swaps",
       "--positions all|simple|defi": "Filter positions type",
-      "--limit <n>": "Number of transactions to return",
+      "--limit <n>": "Limit results (transactions, wallet list; default: 20 for list)",
+      "--offset <n>": "Skip first N results (pagination for wallet list)",
+      "--search <query>": "Filter wallets by name or address",
       "--slippage <percent>": "Slippage tolerance (default: 2%)",
       "--x402": "Use x402 pay-per-call (no API key needed)",
       "--json": "JSON output (default)",

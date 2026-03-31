@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import * as ows from "../lib/ows.js";
 import { print, printError } from "../lib/output.js";
 import { setConfigValue, getConfigValue } from "../lib/config.js";
-import { readSecret } from "../lib/stdin.js";
+import { readSecret, readPassphrase } from "../lib/stdin.js";
 
 async function resolveSecretInput(flags, flagName, fileFlagName, prompt) {
   if (flags[fileFlagName]) {
@@ -47,13 +47,17 @@ export default async function walletImport(args, flags) {
   );
 
   try {
+    // Passphrase is mandatory and must be entered interactively (never via --passphrase flag)
+    process.stderr.write("A passphrase is required to encrypt your wallet.\n\n");
+    const passphrase = await readPassphrase({ confirm: true });
+
     let wallet;
     if (hasKey) {
       const key = await resolveSecretInput(flags, "key", "key-file", "Enter private key (hex): ");
-      wallet = ows.importFromKey(name, key, flags.passphrase);
+      wallet = ows.importFromKey(name, key, passphrase);
     } else {
       const mnemonic = await resolveSecretInput(flags, "mnemonic", "mnemonic-file", "Enter mnemonic phrase: ");
-      wallet = ows.importFromMnemonic(name, mnemonic, flags.passphrase);
+      wallet = ows.importFromMnemonic(name, mnemonic, passphrase);
     }
 
     if (!getConfigValue("defaultWallet")) {

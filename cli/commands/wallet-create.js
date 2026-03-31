@@ -1,12 +1,17 @@
 import * as ows from "../lib/ows.js";
 import { print, printError } from "../lib/output.js";
 import { setConfigValue, getConfigValue } from "../lib/config.js";
+import { readPassphrase } from "../lib/stdin.js";
 
 export default async function walletCreate(args, flags) {
   const name = flags.name || args[0] || generateName();
 
   try {
-    const wallet = ows.createWallet(name, flags.passphrase);
+    // Passphrase is mandatory and must be entered interactively (never via --passphrase flag)
+    process.stderr.write("A passphrase is required to encrypt your wallet.\n\n");
+    const passphrase = await readPassphrase({ confirm: true });
+
+    const wallet = ows.createWallet(name, passphrase);
 
     // Set as default wallet if none exists
     if (!getConfigValue("defaultWallet")) {

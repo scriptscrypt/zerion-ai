@@ -1,9 +1,25 @@
 import * as ows from "../lib/ows.js";
-import { print, printError } from "../lib/output.js";
+import { printError } from "../lib/output.js";
 import { getConfigValue } from "../lib/config.js";
-import { readSecret } from "../lib/stdin.js";
+import { readPassphrase } from "../lib/stdin.js";
 
 export default async function walletExport(args, flags) {
+  // Block export when running as an agent — agents should never access the mnemonic
+  if (process.env.ZERION_AGENT_TOKEN) {
+    printError("agent_blocked", "wallet export is not available in agent mode", {
+      suggestion: "Agents use scoped tokens, not raw keys. See: zerion agent create-token",
+    });
+    process.exit(1);
+  }
+
+  // Require interactive terminal — prevents silent scripted extraction
+  if (!process.stdin.isTTY) {
+    printError("tty_required", "wallet export requires an interactive terminal", {
+      suggestion: "Run this command directly in your terminal, not from a script or pipe",
+    });
+    process.exit(1);
+  }
+
   const walletName = flags.wallet || args[0] || getConfigValue("defaultWallet");
 
   if (!walletName) {
@@ -13,41 +29,28 @@ export default async function walletExport(args, flags) {
     process.exit(1);
   }
 
-  // Security: require --yes or interactive confirmation
-  if (!flags.yes) {
-    process.stderr.write(
-      "\n⚠️  WARNING: This will display your recovery phrase.\n" +
-      "   Anyone with this phrase can control all funds in this wallet.\n" +
-      "   Never share it. Never paste it into a website.\n\n"
-    );
-
-    if (process.stdin.isTTY) {
-      const confirm = await readSecret("Type YES to confirm: ");
-      if (confirm.trim().toUpperCase() !== "YES") {
-        process.stderr.write("Export cancelled.\n");
-        process.exit(0);
-      }
-    } else {
-      printError("confirmation_required", "Use --yes to confirm seed phrase export in non-interactive mode.");
-      process.exit(1);
-    }
-  }
+  // Security warning
+  process.stderr.write(
+    "\n⚠️  WARNING: This will display your recovery phrase.\n" +
+    "   Anyone with this phrase can control all funds in this wallet.\n" +
+    "   Never share it. Never paste it into a website.\n\n"
+  );
 
   try {
-    const mnemonic = ows.exportWallet(walletName, flags.passphrase);
+    // Always prompt for passphrase interactively — never accept from flags
+    const passphrase = await readPassphrase();
+
+    const mnemonic = ows.exportWallet(walletName, passphrase);
     const wallet = ows.getWallet(walletName);
 
-    // Output to stderr, not stdout, to prevent accidental piping/capture
-    process.stderr.write(JSON.stringify({
-      wallet: {
-        name: wallet.name,
-        evmAddress: wallet.evmAddress,
-      },
-      mnemonic,
-    }, null, 2) + "\n");
+    // Write mnemonic to stderr only — keeps it off stdout so pipes/logs never capture it
+    process.stderr.write(`\n  Wallet:   ${wallet.name}\n`);
+    process.stderr.write(`  Address:  ${wallet.evmAddress}\n\n`);
+    process.stderr.write(`  ${mnemonic}\n\n`);
+    process.stderr.write("  ⚠️  Write this down and store it offline. It will not be shown again.\n\n");
   } catch (err) {
     printError("ows_error", `Failed to export wallet: ${err.message}`, {
-      suggestion: "Check wallet name with: zerion wallet list",
+      suggestion: "Check wallet name and passphrase. List wallets: zerion wallet list",
     });
     process.exit(1);
   }
