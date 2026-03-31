@@ -4,6 +4,7 @@ import { print, printError } from "../../lib/util/output.js";
 import { getConfigValue } from "../../lib/config.js";
 import { formatSwapQuote } from "../../lib/util/format.js";
 import { getAgentToken } from "../../lib/wallet/keystore.js";
+import { readPassphrase } from "../../lib/util/prompt.js";
 
 export default async function swap(args, flags) {
   const [fromToken, toToken, amount] = args;
@@ -76,8 +77,9 @@ export default async function swap(args, flags) {
       return;
     }
 
-    // 4. Execute (agent token takes precedence over passphrase)
-    const passphrase = getAgentToken() || flags.passphrase;
+    // 4. Execute (agent token takes precedence, otherwise prompt for passphrase)
+    const agentToken = getAgentToken();
+    const passphrase = agentToken || await readPassphrase();
     const result = await executeSwap(quote, walletName, passphrase);
 
     const resultData = {

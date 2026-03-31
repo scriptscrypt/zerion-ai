@@ -3,6 +3,7 @@ import { getAgentToken } from "../../lib/wallet/keystore.js";
 import { resolveWallet } from "../../lib/wallet/resolve.js";
 import { print, printError } from "../../lib/util/output.js";
 import { getConfigValue } from "../../lib/config.js";
+import { readPassphrase } from "../../lib/util/prompt.js";
 
 export default async function bridge(args, flags) {
   const [token, targetChain, amount] = args;
@@ -69,7 +70,8 @@ export default async function bridge(args, flags) {
       return;
     }
 
-    const passphrase = getAgentToken() || flags.passphrase;
+    const agentToken = getAgentToken();
+    const passphrase = agentToken || await readPassphrase();
     const result = await executeSwap(quote, walletName, passphrase);
 
     print({
