@@ -52,7 +52,7 @@ export default async function configCmd(args, flags) {
 
     default:
       printError("invalid_action", "Usage: zerion config <list|get|set>", {
-        suggestion: "zerion config list",
+        suggestion: "zerion-cli config list",
       });
       process.exit(1);
   }

@@ -17,7 +17,7 @@ export default async function watch(args, flags) {
     const name = args[1] || flags.name;
     if (!name) {
       printError("missing_args", "Name required", {
-        example: "zerion watch remove vitalik",
+        example: "zerion-cli watch remove vitalik",
       });
       process.exit(1);
     }

@@ -1,0 +1,13 @@
+{
+  "name": "zerion",
+  "version": "0.1.0",
+  "description": "Crypto wallet analysis, trading, and portfolio management via Zerion CLI. Supports 14 chains including Ethereum, Base, Arbitrum, Solana, and more.",
+  "author": {
+    "name": "Zerion",
+    "url": "https://zerion.io"
+  },
+  "homepage": "https://github.com/zeriontech/zerion-ai",
+  "repository": "https://github.com/zeriontech/zerion-ai",
+  "license": "MIT",
+  "keywords": ["crypto", "wallet", "defi", "trading", "portfolio", "web3", "ethereum", "solana"]
+}

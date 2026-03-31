@@ -9,8 +9,8 @@ export default async function bridge(args, flags) {
 
   if (!token || !targetChain) {
     printError("missing_args", "Usage: zerion bridge <token> <target-chain> [amount] [--to-token <token>]", {
-      example: "zerion bridge USDC arbitrum 100 --from-chain ethereum",
-      crossSwap: "zerion bridge ETH arbitrum 0.01 --from-chain base --to-token USDC",
+      example: "zerion-cli bridge USDC arbitrum 100 --from-chain ethereum",
+      crossSwap: "zerion-cli bridge ETH arbitrum 0.01 --from-chain base --to-token USDC",
     });
     process.exit(1);
   }

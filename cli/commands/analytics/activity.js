@@ -17,7 +17,7 @@ export default async function analyze(args, flags) {
 
   if (!target) {
     printError("missing_args", "Address, ENS name, or watchlist name required", {
-      example: "zerion analyze vitalik --period 7d",
+      example: "zerion-cli analyze vitalik --period 7d",
     });
     process.exit(1);
   }

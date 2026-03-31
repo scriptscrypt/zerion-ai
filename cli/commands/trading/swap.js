@@ -10,7 +10,7 @@ export default async function swap(args, flags) {
 
   if (!fromToken || !toToken) {
     printError("missing_args", "Usage: zerion swap <from> <to> [amount]", {
-      example: "zerion swap ETH USDC 0.1 --chain base",
+      example: "zerion-cli swap ETH USDC 0.1 --chain base",
     });
     process.exit(1);
   }

@@ -28,7 +28,7 @@ export default async function walletImport(args, flags) {
     printError(
       "missing_input",
       "Provide --key, --key-file, --mnemonic, or --mnemonic-file",
-      { suggestion: "zerion wallet import --key (prompts securely)\nzerion wallet import --key-file ./key.txt\nzerion wallet import --mnemonic (prompts securely)" }
+      { suggestion: "zerion-cli wallet import --key (prompts securely)\nzerion wallet import --key-file ./key.txt\nzerion wallet import --mnemonic (prompts securely)" }
     );
     process.exit(1);
   }
