@@ -3,7 +3,7 @@ name: swap
 description: Swap or bridge crypto tokens across chains
 ---
 
-Help the user swap tokens using zerion-cli.
+Help the user swap tokens using zerion.
 
 ## Steps
 
@@ -13,7 +13,7 @@ Help the user swap tokens using zerion-cli.
 
 2. **Always get a quote first** (never execute without user confirmation):
    ```bash
-   zerion-cli swap <from> <to> <amount>
+   zerion swap <from> <to> <amount>
    ```
 
 3. Present the quote clearly:
@@ -24,12 +24,12 @@ Help the user swap tokens using zerion-cli.
 
 4. If the user confirms, execute:
    ```bash
-   zerion-cli swap <from> <to> <amount> --yes
+   zerion swap <from> <to> <amount> --yes
    ```
 
 5. For cross-chain swaps, add `--to-chain`:
    ```bash
-   zerion-cli swap <from> <to> <amount> --to-chain <chain> --yes
+   zerion swap <from> <to> <amount> --to-chain <chain> --yes
    ```
 
 ## Safety Rules

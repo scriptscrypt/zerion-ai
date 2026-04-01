@@ -58,7 +58,7 @@ describe("examples", () => {
 
     it("has correct command", () => {
       const data = readJSON("examples/openclaw/tool.json");
-      assert.equal(data.command, "zerion-cli");
+      assert.equal(data.command, "zerion");
     });
 
     it("has wallet analyze args structure", () => {

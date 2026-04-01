@@ -18,7 +18,7 @@ Use this skill when you want a fast, read-only wallet briefing for a human or an
 This skill is designed to work with either:
 
 - Zerion's hosted MCP in MCP-native clients
-- `zerion-cli` in OpenClaw-like command-based frameworks
+- `zerion` in OpenClaw-like command-based frameworks
 
 ## Example wallets
 

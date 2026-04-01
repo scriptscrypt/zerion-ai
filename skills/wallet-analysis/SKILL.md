@@ -1,29 +1,29 @@
 ---
 name: wallet-analysis
-description: "Analyze any crypto wallet: portfolio value, token holdings, DeFi positions, transactions, and PnL. Supports ENS names and the chain IDs currently accepted by zerion-cli."
-compatibility: "Requires zerion-cli (`npx zerion-cli` or `npm install -g zerion-cli`). Set ZERION_API_KEY or use --x402 for pay-per-call."
+description: "Analyze any crypto wallet: portfolio value, token holdings, DeFi positions, transactions, and PnL. Supports ENS names and the chain IDs currently accepted by zerion."
+compatibility: "Requires zerion (`npx zerion` or `npm install -g zerion`). Set ZERION_API_KEY or use --x402 for pay-per-call."
 license: MIT
 allowed-tools: Bash
 metadata:
   openclaw:
     requires:
       bins:
-        - zerion-cli
+        - zerion
     install:
       - kind: node
-        package: "zerion-cli"
-        bins: [zerion-cli]
+        package: "zerion"
+        bins: [zerion]
     homepage: https://github.com/zeriontech/zerion-ai
 ---
 
 # Wallet Analysis
 
-Analyze crypto wallets using the zerion-cli. Returns structured JSON with portfolio overview, top positions, recent transactions, and PnL.
+Analyze crypto wallets using the zerion. Returns structured JSON with portfolio overview, top positions, recent transactions, and PnL.
 
 ## Setup check
 
 ```bash
-which zerion-cli || npm install -g zerion-cli
+which zerion || npm install -g zerion
 ```
 
 ## Authentication
@@ -41,7 +41,7 @@ Get yours at [dashboard.zerion.io](https://dashboard.zerion.io). Rate limits: 12
 ### x402 pay-per-call (no signup)
 
 ```bash
-zerion-cli wallet analyze <address> --x402
+zerion wallet analyze <address> --x402
 ```
 
 Pays $0.01 USDC per request on Base. No API key needed -- the agent's wallet handles payment automatically via the [x402 protocol](https://www.x402.org/).
@@ -60,7 +60,7 @@ Use this skill when the user asks about:
 ### Full analysis (recommended starting point)
 
 ```bash
-zerion-cli wallet analyze <address> [--positions all|simple|defi] [--chain <chain>] [--limit <n>] [--x402]
+zerion wallet analyze <address> [--positions all|simple|defi] [--chain <chain>] [--limit <n>] [--x402]
 ```
 
 Fetches portfolio, positions, transactions, and PnL in parallel. Returns a structured summary with:
@@ -72,7 +72,7 @@ Fetches portfolio, positions, transactions, and PnL in parallel. Returns a struc
 ### Portfolio overview
 
 ```bash
-zerion-cli wallet portfolio <address> [--x402]
+zerion wallet portfolio <address> [--x402]
 ```
 
 Total wallet value, breakdown by chain, and 1-day change.
@@ -80,7 +80,7 @@ Total wallet value, breakdown by chain, and 1-day change.
 ### Positions (token holdings + DeFi)
 
 ```bash
-zerion-cli wallet positions <address> [--chain <chain>] [--positions all|simple|defi] [--x402]
+zerion wallet positions <address> [--chain <chain>] [--positions all|simple|defi] [--x402]
 ```
 
 Position filters:
@@ -91,7 +91,7 @@ Position filters:
 ### Transaction history
 
 ```bash
-zerion-cli wallet transactions <address> [--limit <n>] [--chain <chain>] [--x402]
+zerion wallet transactions <address> [--limit <n>] [--chain <chain>] [--x402]
 ```
 
 Returns interpreted transactions with parsed actions (trade, receive, send, mint, approve, etc.). Default limit: 10.
@@ -99,19 +99,19 @@ Returns interpreted transactions with parsed actions (trade, receive, send, mint
 ### Profit and loss
 
 ```bash
-zerion-cli wallet pnl <address> [--x402]
+zerion wallet pnl <address> [--x402]
 ```
 
 Realized gains, unrealized gains, total invested, fees, and relative percentages.
 
 ## Typical workflow
 
-1. Check CLI: `which zerion-cli || npm install -g zerion-cli`
-2. Run full analysis: `zerion-cli wallet analyze <address>`
+1. Check CLI: `which zerion || npm install -g zerion`
+2. Run full analysis: `zerion wallet analyze <address>`
 3. If the user wants detail on a specific area, use individual commands:
-   - DeFi-only: `zerion-cli wallet positions <address> --positions defi`
-   - Chain-specific: `zerion-cli wallet positions <address> --chain ethereum`
-   - More transactions: `zerion-cli wallet transactions <address> --limit 25`
+   - DeFi-only: `zerion wallet positions <address> --positions defi`
+   - Chain-specific: `zerion wallet positions <address> --chain ethereum`
+   - More transactions: `zerion wallet transactions <address> --limit 25`
 
 ## Output format
 
@@ -121,7 +121,7 @@ All output is JSON on stdout. Errors are JSON on stderr with `{ "error": { "code
 
 ethereum, base, arbitrum, optimism, polygon, bsc, avalanche, gnosis, scroll, linea, zksync, solana, zora, blast.
 
-Use `zerion-cli chains list` to inspect the broader chain catalog, but stick to the IDs above for `--chain` unless the CLI validator is expanded.
+Use `zerion chains list` to inspect the broader chain catalog, but stick to the IDs above for `--chain` unless the CLI validator is expanded.
 
 ## Best practices
 
@@ -134,7 +134,7 @@ Use `zerion-cli chains list` to inspect the broader chain catalog, but stick to 
 ## Troubleshooting
 
 - **`missing_api_key`**: Set `ZERION_API_KEY` or add `--x402` flag
-- **`unsupported_chain`**: Run `zerion-cli chains list` to check valid chain IDs
+- **`unsupported_chain`**: Run `zerion chains list` to check valid chain IDs
 - **Empty positions/transactions**: Wallet may be inactive or very new
 - **`api_error` with status 429**: Rate limited -- wait or switch to x402
 - **ENS name fails**: Retry with the resolved 0x address if upstream name resolution is unavailable

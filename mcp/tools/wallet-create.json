@@ -11,5 +11,5 @@
     },
     "required": ["name"]
   },
-  "cli": "zerion-cli wallet create --name {name}"
+  "cli": "zerion wallet create --name {name}"
 }

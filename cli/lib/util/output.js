@@ -1,6 +1,6 @@
 /**
  * Output helpers — JSON to stdout, errors to stderr.
- * Matching the zerion-cli convention: agents parse stdout, humans read --pretty.
+ * Matching the zerion convention: agents parse stdout, humans read --pretty.
  */
 
 export function print(value, prettyFormatter) {

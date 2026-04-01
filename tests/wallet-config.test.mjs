@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 // Override config paths for testing
-const testDir = join(tmpdir(), `zerion-cli-test-${Date.now()}`);
+const testDir = join(tmpdir(), `zerion-test-${Date.now()}`);
 
 // We need to set env vars before importing config module
 process.env.HOME = tmpdir();
@@ -15,8 +15,8 @@ describe("config", () => {
 
   beforeEach(async () => {
     // Clean up any existing config from prior tests
-    if (existsSync(join(tmpdir(), ".zerion-cli"))) {
-      rmSync(join(tmpdir(), ".zerion-cli"), { recursive: true });
+    if (existsSync(join(tmpdir(), ".zerion"))) {
+      rmSync(join(tmpdir(), ".zerion"), { recursive: true });
     }
     mkdirSync(testDir, { recursive: true });
     // Fresh import each time

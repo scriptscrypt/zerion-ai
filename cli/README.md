@@ -1,17 +1,17 @@
-# zerion-cli
+# zerion
 
-`zerion-cli` is the JSON-first CLI for using Zerion from AI agents, developer tools, and command-based runtimes.
+`zerion` is the JSON-first CLI for using Zerion from AI agents, developer tools, and command-based runtimes.
 
 ## Install
 
 ```bash
-npm install -g zerion-cli
+npm install -g zerion
 ```
 
 Or run directly:
 
 ```bash
-npx zerion-cli --help
+npx zerion --help
 ```
 
 Requires Node.js 20 or later.
@@ -26,7 +26,7 @@ export ZERION_API_KEY="zk_dev_..."
 
 # Option B: x402 pay-per-call (no API key needed)
 export WALLET_PRIVATE_KEY="0x..."
-zerion-cli wallet analyze <address> --x402
+zerion wallet analyze <address> --x402
 
 # Option C: Agent token (unattended trading)
 export ZERION_AGENT_TOKEN=ows_key_...
@@ -37,27 +37,27 @@ export ZERION_AGENT_TOKEN=ows_key_...
 ### Wallet management
 
 ```
-zerion-cli wallet create --name <name>                        Create encrypted wallet (EVM + Solana)
-zerion-cli wallet import --name <name> --key                  Import from private key (interactive prompt)
-zerion-cli wallet import --name <name> --key-file <path>      Import from file (safest)
-zerion-cli wallet import --name <name> --mnemonic             Import from seed phrase
-zerion-cli wallet import --name <name> --mnemonic-file <path> Import from mnemonic file
-zerion-cli wallet list                                        List all wallets
-zerion-cli wallet fund                                        Show deposit addresses for funding
-zerion-cli wallet backup --wallet <name>                      Export recovery phrase (mnemonic backup)
-zerion-cli wallet delete <name>                               Permanently delete a wallet (requires passphrase)
-zerion-cli wallet sync --wallet <name>                        Sync wallet to Zerion app via QR code
-zerion-cli wallet sync --all                                  Sync all wallets to Zerion app
+zerion wallet create --name <name>                        Create encrypted wallet (EVM + Solana)
+zerion wallet import --name <name> --key                  Import from private key (interactive prompt)
+zerion wallet import --name <name> --key-file <path>      Import from file (safest)
+zerion wallet import --name <name> --mnemonic             Import from seed phrase
+zerion wallet import --name <name> --mnemonic-file <path> Import from mnemonic file
+zerion wallet list                                        List all wallets
+zerion wallet fund                                        Show deposit addresses for funding
+zerion wallet backup --wallet <name>                      Export recovery phrase (mnemonic backup)
+zerion wallet delete <name>                               Permanently delete a wallet (requires passphrase)
+zerion wallet sync --wallet <name>                        Sync wallet to Zerion app via QR code
+zerion wallet sync --all                                  Sync all wallets to Zerion app
 ```
 
 ### Wallet analysis
 
 ```
-zerion-cli wallet analyze <address>      Full analysis (portfolio, positions, txs, PnL in parallel)
-zerion-cli wallet portfolio <address>    Portfolio value and top positions
-zerion-cli wallet positions <address>    Token + DeFi positions (--positions all|simple|defi)
-zerion-cli wallet transactions <address> Transaction history (--limit <n>, --chain <chain>)
-zerion-cli wallet pnl <address>          Profit & loss (realized, unrealized, fees)
+zerion wallet analyze <address>      Full analysis (portfolio, positions, txs, PnL in parallel)
+zerion wallet portfolio <address>    Portfolio value and top positions
+zerion wallet positions <address>    Token + DeFi positions (--positions all|simple|defi)
+zerion wallet transactions <address> Transaction history (--limit <n>, --chain <chain>)
+zerion wallet pnl <address>          Profit & loss (realized, unrealized, fees)
 ```
 
 Addresses can be `0x...` hex or ENS names (e.g., `vitalik.eth`).
@@ -67,24 +67,24 @@ Addresses can be `0x...` hex or ENS names (e.g., `vitalik.eth`).
 These use `--wallet` or the default wallet instead of a positional address:
 
 ```
-zerion-cli portfolio                     Portfolio (shorthand)
-zerion-cli positions                     Positions (shorthand)
-zerion-cli pnl                           PnL (shorthand)
-zerion-cli history                       Transaction history (shorthand)
+zerion portfolio                     Portfolio (shorthand)
+zerion positions                     Positions (shorthand)
+zerion pnl                           PnL (shorthand)
+zerion history                       Transaction history (shorthand)
 ```
 
 ### Trading
 
 ```
-zerion-cli swap <from> <to> <amount>                             Swap tokens (quote only)
-zerion-cli swap <from> <to> <amount> --yes                       Execute the swap
-zerion-cli swap <from> <to> <amount> --to-chain <chain>          Cross-chain swap
-zerion-cli swap <from> <to> <amount> --to-chain <chain> --yes    Execute cross-chain swap
-zerion-cli swap tokens [chain]                                   List tokens available for swap
-zerion-cli bridge <token> <chain> <amount>                       Bridge tokens (quote only)
-zerion-cli bridge <token> <chain> <amount> --yes                 Execute bridge
-zerion-cli bridge <token> <chain> <amount> --to-token <tok>      Bridge + swap on destination
-zerion-cli search <query>                                        Search for tokens by name or symbol
+zerion swap <from> <to> <amount>                             Swap tokens (quote only)
+zerion swap <from> <to> <amount> --yes                       Execute the swap
+zerion swap <from> <to> <amount> --to-chain <chain>          Cross-chain swap
+zerion swap <from> <to> <amount> --to-chain <chain> --yes    Execute cross-chain swap
+zerion swap tokens [chain]                                   List tokens available for swap
+zerion bridge <token> <chain> <amount>                       Bridge tokens (quote only)
+zerion bridge <token> <chain> <amount> --yes                 Execute bridge
+zerion bridge <token> <chain> <amount> --to-token <tok>      Bridge + swap on destination
+zerion search <query>                                        Search for tokens by name or symbol
 ```
 
 ### Agent tokens
@@ -92,9 +92,9 @@ zerion-cli search <query>                                        Search for toke
 Create scoped API tokens that bypass passphrase prompts for unattended trading:
 
 ```
-zerion-cli agent create-token --name <bot> --wallet <wallet>     Create scoped agent token
-zerion-cli agent list-tokens                                     List active agent tokens
-zerion-cli agent revoke-token --name <bot>                       Revoke an agent token
+zerion agent create-token --name <bot> --wallet <wallet>     Create scoped agent token
+zerion agent list-tokens                                     List active agent tokens
+zerion agent revoke-token --name <bot>                       Revoke an agent token
 ```
 
 Usage: `export ZERION_AGENT_TOKEN=ows_key_...` to bypass passphrase prompts.
@@ -104,10 +104,10 @@ Usage: `export ZERION_AGENT_TOKEN=ows_key_...` to bypass passphrase prompts.
 Restrict what agent tokens can do:
 
 ```
-zerion-cli agent create-policy --name <policy>                   Create security policy
-zerion-cli agent list-policies                                   List all policies
-zerion-cli agent show-policy <id>                                Show policy details
-zerion-cli agent delete-policy <id>                              Delete a policy
+zerion agent create-policy --name <policy>                   Create security policy
+zerion agent list-policies                                   List all policies
+zerion agent show-policy <id>                                Show policy details
+zerion agent delete-policy <id>                              Delete a policy
 ```
 
 Policy flags (for `create-policy`):
@@ -123,28 +123,28 @@ Policy flags (for `create-policy`):
 ### Watchlist
 
 ```
-zerion-cli watch <address> --name <label>    Add wallet to watchlist
-zerion-cli watch list                        List watched wallets
-zerion-cli watch remove <name>               Remove from watchlist
-zerion-cli analyze <name|address>            Analyze wallet trading activity
+zerion watch <address> --name <label>    Add wallet to watchlist
+zerion watch list                        List watched wallets
+zerion watch remove <name>               Remove from watchlist
+zerion analyze <name|address>            Analyze wallet trading activity
 ```
 
 ### Config
 
 ```
-zerion-cli config set apiKey <key>           Set API key
-zerion-cli config set defaultWallet <name>   Set default wallet
-zerion-cli config set defaultChain <chain>   Set default chain
-zerion-cli config set slippage <percent>     Set slippage tolerance (default: 2%)
-zerion-cli config list                       Show current configuration
+zerion config set apiKey <key>           Set API key
+zerion config set defaultWallet <name>   Set default wallet
+zerion config set defaultChain <chain>   Set default chain
+zerion config set slippage <percent>     Set slippage tolerance (default: 2%)
+zerion config list                       Show current configuration
 ```
 
 ### Other
 
 ```
-zerion-cli chains                            List supported chains
-zerion-cli --help                            Show usage
-zerion-cli --version                         Show version
+zerion chains                            List supported chains
+zerion --help                            Show usage
+zerion --version                         Show version
 ```
 
 ## Global flags
@@ -193,8 +193,8 @@ ethereum, base, arbitrum, optimism, polygon, binance-smart-chain, avalanche, gno
 |-------|-------|-----|
 | `missing_api_key` | No `ZERION_API_KEY` set | Set the env var or use `--x402` |
 | `no_wallet` | No wallet specified and no default | Use `--wallet <name>` or `config set defaultWallet` |
-| `wallet_not_found` | Wallet name doesn't exist in vault | Run `zerion-cli wallet list` |
-| `unsupported_chain` | Invalid `--chain` value | Run `zerion-cli chains` |
-| `invalid_agent_token` | Agent token revoked or invalid | Create a new one with `zerion-cli agent create-token` |
+| `wallet_not_found` | Wallet name doesn't exist in vault | Run `zerion wallet list` |
+| `unsupported_chain` | Invalid `--chain` value | Run `zerion chains` |
+| `invalid_agent_token` | Agent token revoked or invalid | Create a new one with `zerion agent create-token` |
 | `api_error` 401 | Invalid API key | Check key at dashboard.zerion.io |
 | `api_error` 429 | Rate limited | Wait and retry, or use x402 |

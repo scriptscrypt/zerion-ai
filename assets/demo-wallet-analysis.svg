@@ -5,7 +5,7 @@
   <circle cx="118" cy="114" r="7" fill="#F87171"/>
   <circle cx="142" cy="114" r="7" fill="#FBBF24"/>
   <circle cx="166" cy="114" r="7" fill="#34D399"/>
-  <text x="196" y="120" fill="#93C5FD" font-family="Menlo, Monaco, monospace" font-size="18">zerion-cli wallet analyze vitalik.eth</text>
+  <text x="196" y="120" fill="#93C5FD" font-family="Menlo, Monaco, monospace" font-size="18">zerion wallet analyze vitalik.eth</text>
   <text x="110" y="182" fill="#E2E8F0" font-family="Menlo, Monaco, monospace" font-size="28">wallet-analysis</text>
   <text x="110" y="220" fill="#94A3B8" font-family="Menlo, Monaco, monospace" font-size="20">query: vitalik.eth</text>
   <text x="110" y="254" fill="#94A3B8" font-family="Menlo, Monaco, monospace" font-size="20">resolved_address: 0xd8dA...96045</text>

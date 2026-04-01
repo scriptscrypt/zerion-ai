@@ -9,16 +9,16 @@ export default async function bridge(args, flags) {
   const [token, targetChain, amount] = args;
 
   if (!token || !targetChain) {
-    printError("missing_args", "Usage: zerion-cli bridge <token> <target-chain> [amount] [--to-token <token>]", {
-      example: "zerion-cli bridge USDC arbitrum 100 --from-chain ethereum",
-      crossSwap: "zerion-cli bridge ETH arbitrum 0.01 --from-chain base --to-token USDC",
+    printError("missing_args", "Usage: zerion bridge <token> <target-chain> [amount] [--to-token <token>]", {
+      example: "zerion bridge USDC arbitrum 100 --from-chain ethereum",
+      crossSwap: "zerion bridge ETH arbitrum 0.01 --from-chain base --to-token USDC",
     });
     process.exit(1);
   }
 
   if (!amount) {
     printError("missing_amount", "Specify an amount to bridge", {
-      example: `zerion-cli bridge ${token} ${targetChain} 100`,
+      example: `zerion bridge ${token} ${targetChain} 100`,
     });
     process.exit(1);
   }
@@ -41,7 +41,7 @@ export default async function bridge(args, flags) {
 
     if (quote.preconditions.enough_balance === false) {
       printError("insufficient_funds", `Insufficient ${quote.from.symbol} balance`, {
-        suggestion: `Fund your wallet: zerion-cli wallet fund --wallet ${walletName}`,
+        suggestion: `Fund your wallet: zerion wallet fund --wallet ${walletName}`,
       });
       process.exit(1);
     }
@@ -65,7 +65,7 @@ export default async function bridge(args, flags) {
       print({
         ...quoteSummary,
         action: "Confirm with --yes to execute",
-        command: `zerion-cli bridge ${token} ${targetChain} ${amount} --from-chain ${fromChain} --wallet ${walletName} --yes`,
+        command: `zerion bridge ${token} ${targetChain} ${amount} --from-chain ${fromChain} --wallet ${walletName} --yes`,
       });
       return;
     }
@@ -87,7 +87,7 @@ export default async function bridge(args, flags) {
   } catch (err) {
     if (process.env.ZERION_AGENT_TOKEN && err.message?.includes("API key not found")) {
       printError("invalid_agent_token", "Agent token is revoked or invalid", {
-        suggestion: "Unset it (unset ZERION_AGENT_TOKEN) or create a new one (zerion-cli agent create-token)",
+        suggestion: "Unset it (unset ZERION_AGENT_TOKEN) or create a new one (zerion agent create-token)",
       });
     } else {
       printError(err.code || "bridge_error", err.message, {

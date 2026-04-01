@@ -8,7 +8,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 const skillsDir = join(ROOT, "skills");
 
-const EXPECTED_SKILLS = ["wallet-analysis", "wallet-trading", "chains", "zerion-cli"];
+const EXPECTED_SKILLS = ["wallet-analysis", "wallet-trading", "chains", "zerion"];
 
 const REQUIRED_FRONTMATTER = ["name", "description", "license", "allowed-tools"];
 
@@ -65,11 +65,11 @@ describe("skills directory", () => {
         assert.equal(fm.fields.name, skill);
       });
 
-      it("frontmatter declares zerion-cli as openclaw dependency", () => {
+      it("frontmatter declares zerion as openclaw dependency", () => {
         const content = readFileSync(join(skillDir, "SKILL.md"), "utf8");
         assert.ok(
-          content.includes('package: "zerion-cli"'),
-          "Must declare zerion-cli as openclaw install package"
+          content.includes('package: "zerion"'),
+          "Must declare zerion as openclaw install package"
         );
       });
     });
@@ -100,8 +100,8 @@ describe("wallet-analysis extras", () => {
 });
 
 describe("skill guidance consistency", () => {
-  it("documents WALLET_PRIVATE_KEY for x402 in zerion-cli skill", () => {
-    const content = readFileSync(join(skillsDir, "zerion-cli", "SKILL.md"), "utf8");
+  it("documents WALLET_PRIVATE_KEY for x402 in zerion skill", () => {
+    const content = readFileSync(join(skillsDir, "zerion", "SKILL.md"), "utf8");
     assert.match(content, /WALLET_PRIVATE_KEY/);
   });
 

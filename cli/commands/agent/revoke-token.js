@@ -6,7 +6,7 @@ export default async function agentRevokeToken(args, flags) {
 
   if (!nameOrId) {
     printError("missing_args", "Token name or ID required", {
-      example: "zerion-cli agent revoke-token --name trading-bot",
+      example: "zerion agent revoke-token --name trading-bot",
     });
     process.exit(1);
   }

@@ -5,19 +5,19 @@ import { print, printError } from "../../lib/util/output.js";
 export default async function watch(args, flags) {
   const action = args[0];
 
-  // zerion-cli watch list
+  // zerion watch list
   if (action === "list") {
     const entries = listWatch();
     print({ watchlist: entries, count: entries.length });
     return;
   }
 
-  // zerion-cli watch remove <name>
+  // zerion watch remove <name>
   if (action === "remove") {
     const name = args[1] || flags.name;
     if (!name) {
       printError("missing_args", "Name required", {
-        example: "zerion-cli watch remove vitalik",
+        example: "zerion watch remove vitalik",
       });
       process.exit(1);
     }
@@ -31,20 +31,20 @@ export default async function watch(args, flags) {
     return;
   }
 
-  // zerion-cli watch <address> --name <label>
+  // zerion watch <address> --name <label>
   const addressInput = action || flags.address;
   const name = flags.name || args[1];
 
   if (!addressInput) {
     printError("missing_args", "Address or ENS name required", {
-      example: 'zerion-cli watch 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 --name vitalik',
+      example: 'zerion watch 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 --name vitalik',
     });
     process.exit(1);
   }
 
   if (!name) {
     printError("missing_args", "Label required with --name", {
-      example: `zerion-cli watch ${addressInput} --name my-label`,
+      example: `zerion watch ${addressInput} --name my-label`,
     });
     process.exit(1);
   }

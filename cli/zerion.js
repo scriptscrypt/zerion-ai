@@ -7,6 +7,10 @@
 
 import { register, registerSingle, dispatch } from "./router.js";
 import { printError, setPrettyMode } from "./lib/util/output.js";
+import { migrateFromZerionCli } from "./lib/util/migrate.js";
+
+// Migrate config from ~/.zerion-cli → ~/.zerion on first run after upgrade
+migrateFromZerionCli();
 
 // Enable --pretty if flag present or auto-detect TTY
 if (process.argv.includes("--pretty") || (process.stdout.isTTY && !process.argv.includes("--json"))) {

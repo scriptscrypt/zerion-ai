@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const BIN = join(__dirname, "../cli/zerion-cli.js");
+const BIN = join(__dirname, "../cli/zerion.js");
 
 const API_KEY = process.env.ZERION_API_KEY || "";
 const SKIP = !API_KEY;

@@ -9,14 +9,14 @@ export default async function agentCreateToken(args, flags) {
 
   if (!name) {
     printError("missing_args", "Token name required", {
-      example: 'zerion-cli agent create-token --name "trading-bot" --wallet my-agent --policy <policy-id>',
+      example: 'zerion agent create-token --name "trading-bot" --wallet my-agent --policy <policy-id>',
     });
     process.exit(1);
   }
 
   if (!walletName) {
     printError("no_wallet", "No wallet specified", {
-      suggestion: "Use --wallet <name> or set default: zerion-cli config set defaultWallet <name>",
+      suggestion: "Use --wallet <name> or set default: zerion config set defaultWallet <name>",
     });
     process.exit(1);
   }
@@ -35,7 +35,7 @@ export default async function agentCreateToken(args, flags) {
       ows.getPolicy(pid);
     } catch {
       printError("policy_not_found", `Policy "${pid}" not found`, {
-        suggestion: "List policies: zerion-cli agent list-policies",
+        suggestion: "List policies: zerion agent list-policies",
       });
       process.exit(1);
     }
@@ -46,7 +46,7 @@ export default async function agentCreateToken(args, flags) {
 
     process.stderr.write(
       "\n⚠️  Save this token now — it will NOT be shown again.\n" +
-      "   Use it as: ZERION_AGENT_TOKEN=<token> zerion-cli swap ...\n\n"
+      "   Use it as: ZERION_AGENT_TOKEN=<token> zerion swap ...\n\n"
     );
 
     print({

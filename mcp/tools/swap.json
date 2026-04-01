@@ -31,5 +31,5 @@
     },
     "required": ["from_token", "to_token", "amount"]
   },
-  "cli": "zerion-cli swap {from_token} {to_token} {amount} [--chain {chain}] [--to-chain {to_chain}] [--yes]"
+  "cli": "zerion swap {from_token} {to_token} {amount} [--chain {chain}] [--to-chain {to_chain}] [--yes]"
 }

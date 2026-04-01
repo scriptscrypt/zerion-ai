@@ -1,11 +1,11 @@
 # OpenClaw example
 
-This example shows how to use `zerion-cli` as a command-based tool in an OpenClaw-like environment.
+This example shows how to use `zerion` as a command-based tool in an OpenClaw-like environment.
 
 ## Install
 
 ```bash
-npm install -g zerion-cli
+npm install -g zerion
 ```
 
 ## Environment
@@ -22,12 +22,12 @@ OpenClaw-style runtimes work best when the tool:
 - returns JSON on stdout
 - exits non-zero on failure
 
-`zerion-cli` is built for that shape.
+`zerion` is built for that shape.
 
 ## Minimal invocation
 
 ```bash
-zerion-cli wallet analyze 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045
+zerion wallet analyze 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045
 ```
 
 ## Suggested tool registration

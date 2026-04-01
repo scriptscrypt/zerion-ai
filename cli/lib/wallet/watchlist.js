@@ -1,6 +1,6 @@
 /**
  * Watchlist storage — track any wallet address with a label.
- * Stored at ~/.zerion-cli/watchlist.json
+ * Stored at ~/.zerion/watchlist.json
  */
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
@@ -57,6 +57,6 @@ export function resolveWatchAddress(nameOrAddress) {
     return nameOrAddress;
   }
   const entry = getWatch(nameOrAddress);
-  if (!entry) throw new Error(`"${nameOrAddress}" not in watchlist. Add it: zerion-cli watch <address> --name ${nameOrAddress}`);
+  if (!entry) throw new Error(`"${nameOrAddress}" not in watchlist. Add it: zerion watch <address> --name ${nameOrAddress}`);
   return entry.address;
 }

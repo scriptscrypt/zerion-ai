@@ -17,7 +17,7 @@ Please prefer small, concrete improvements over broad abstractions.
 
 ```bash
 npm test
-node ./cli/zerion-cli.js --help
+node ./cli/zerion.js --help
 ```
 
 ## Contribution Guidelines

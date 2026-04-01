@@ -1,29 +1,29 @@
 ---
 name: wallet-trading
 description: "Trade crypto tokens: swap, bridge across 14 chains. Manage wallets, agent tokens, and security policies."
-compatibility: "Requires zerion-cli (`npx zerion-cli` or `npm install -g zerion-cli`). Set ZERION_API_KEY. Trading requires OWS wallet setup."
+compatibility: "Requires zerion (`npx zerion` or `npm install -g zerion`). Set ZERION_API_KEY. Trading requires OWS wallet setup."
 license: MIT
 allowed-tools: Bash
 metadata:
   openclaw:
     requires:
       bins:
-        - zerion-cli
+        - zerion
     install:
       - kind: node
-        package: "zerion-cli"
-        bins: [zerion-cli]
+        package: "zerion"
+        bins: [zerion]
     homepage: https://github.com/zeriontech/zerion-ai
 ---
 
 # Wallet Trading
 
-Trade crypto tokens, manage wallets, and configure agent security policies using zerion-cli.
+Trade crypto tokens, manage wallets, and configure agent security policies using zerion.
 
 ## Setup check
 
 ```bash
-which zerion-cli || npm install -g zerion-cli
+which zerion || npm install -g zerion
 ```
 
 ## Authentication
@@ -49,7 +49,7 @@ Use this skill when the user asks about:
 ### Create a wallet
 
 ```bash
-zerion-cli wallet create --name <name>
+zerion wallet create --name <name>
 ```
 
 Creates an OWS-encrypted wallet with both EVM and Solana addresses.
@@ -57,21 +57,21 @@ Creates an OWS-encrypted wallet with both EVM and Solana addresses.
 ### Import a wallet
 
 ```bash
-zerion-cli wallet import --name <name> --key        # interactive private key prompt
-zerion-cli wallet import --name <name> --mnemonic    # interactive mnemonic prompt
-zerion-cli wallet import --name <name> --key-file <path>  # from file (safest)
+zerion wallet import --name <name> --key        # interactive private key prompt
+zerion wallet import --name <name> --mnemonic    # interactive mnemonic prompt
+zerion wallet import --name <name> --key-file <path>  # from file (safest)
 ```
 
 ### List wallets
 
 ```bash
-zerion-cli wallet list
+zerion wallet list
 ```
 
 ### Set default wallet
 
 ```bash
-zerion-cli config set defaultWallet <name>
+zerion config set defaultWallet <name>
 ```
 
 ## Trading
@@ -80,36 +80,36 @@ zerion-cli config set defaultWallet <name>
 
 ```bash
 # Get a quote
-zerion-cli swap ETH USDC 0.1
+zerion swap ETH USDC 0.1
 
 # Execute the swap
-zerion-cli swap ETH USDC 0.1 --yes
+zerion swap ETH USDC 0.1 --yes
 
 # Cross-chain swap (swap + bridge)
-zerion-cli swap ETH USDC 0.1 --to-chain arbitrum --yes
+zerion swap ETH USDC 0.1 --to-chain arbitrum --yes
 ```
 
 ### Bridge tokens
 
 ```bash
 # Bridge ETH to Arbitrum
-zerion-cli bridge ETH arbitrum 0.1 --yes
+zerion bridge ETH arbitrum 0.1 --yes
 
 # Bridge + swap (bridge ETH to Arbitrum, receive USDC)
-zerion-cli bridge ETH arbitrum 0.1 --to-token USDC --yes
+zerion bridge ETH arbitrum 0.1 --to-token USDC --yes
 ```
 
 ### Search tokens
 
 ```bash
-zerion-cli search PEPE
-zerion-cli search "uniswap" --chain ethereum
+zerion search PEPE
+zerion search "uniswap" --chain ethereum
 ```
 
 ### List available swap tokens
 
 ```bash
-zerion-cli swap tokens ethereum
+zerion swap tokens ethereum
 ```
 
 ## Agent tokens (unattended trading)
@@ -118,19 +118,19 @@ Create scoped API tokens that bypass passphrase prompts:
 
 ```bash
 # Create a token
-zerion-cli agent create-token --name my-bot --wallet test-bot
+zerion agent create-token --name my-bot --wallet test-bot
 
 # List tokens
-zerion-cli agent list-tokens
+zerion agent list-tokens
 
 # Revoke a token
-zerion-cli agent revoke-token --name my-bot
+zerion agent revoke-token --name my-bot
 ```
 
 Use agent tokens via environment variable:
 ```bash
 export ZERION_AGENT_TOKEN=ows_key_...
-zerion-cli swap ETH USDC 0.1 --yes  # no passphrase prompt
+zerion swap ETH USDC 0.1 --yes  # no passphrase prompt
 ```
 
 ## Security policies
@@ -139,45 +139,45 @@ Restrict what agent tokens can do:
 
 ```bash
 # Chain lock — only allow trading on specific chains
-zerion-cli agent create-policy --name safe-trading --chains base,arbitrum
+zerion agent create-policy --name safe-trading --chains base,arbitrum
 
 # Expiry — token expires after time period
-zerion-cli agent create-policy --name temp-access --expires 24h
+zerion agent create-policy --name temp-access --expires 24h
 
 # Deny raw transfers
-zerion-cli agent create-policy --name no-transfers --deny-transfers
+zerion agent create-policy --name no-transfers --deny-transfers
 
 # Deny ERC-20 approvals
-zerion-cli agent create-policy --name no-approvals --deny-approvals
+zerion agent create-policy --name no-approvals --deny-approvals
 
 # Allowlist — only interact with specific addresses
-zerion-cli agent create-policy --name dex-only --allowlist 0xRouter1,0xRouter2
+zerion agent create-policy --name dex-only --allowlist 0xRouter1,0xRouter2
 
 # Combine multiple rules
-zerion-cli agent create-policy --name strict \
+zerion agent create-policy --name strict \
   --chains base --expires 7d --deny-transfers --deny-approvals
 
 # List / show / delete policies
-zerion-cli agent list-policies
-zerion-cli agent show-policy <id>
-zerion-cli agent delete-policy <id>
+zerion agent list-policies
+zerion agent show-policy <id>
+zerion agent delete-policy <id>
 ```
 
 ## Watchlist and analysis
 
 ```bash
-zerion-cli watch 0xd8dA... --name vitalik
-zerion-cli watch list
-zerion-cli analyze vitalik
-zerion-cli watch remove vitalik
+zerion watch 0xd8dA... --name vitalik
+zerion watch list
+zerion analyze vitalik
+zerion watch remove vitalik
 ```
 
 ## Wallet backup & sync
 
 ```bash
-zerion-cli wallet backup --wallet test-bot   # Export recovery phrase (mnemonic)
-zerion-cli wallet sync --wallet test-bot     # QR code to sync with Zerion iOS app
-zerion-cli wallet sync --all                 # Sync all wallets
+zerion wallet backup --wallet test-bot   # Export recovery phrase (mnemonic)
+zerion wallet sync --wallet test-bot     # QR code to sync with Zerion iOS app
+zerion wallet sync --all                 # Sync all wallets
 ```
 
 ## Output modes

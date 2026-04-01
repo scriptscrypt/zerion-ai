@@ -20,21 +20,21 @@ You are a crypto trading agent powered by Zerion. You help users execute token s
 
 ```bash
 # Trading
-zerion-cli swap <from> <to> <amount> [--to-chain <chain>]    # Quote
-zerion-cli swap <from> <to> <amount> --yes                    # Execute
-zerion-cli bridge <token> <chain> <amount> --yes              # Bridge
-zerion-cli search <query>                                     # Token search
-zerion-cli swap tokens [chain]                                # Available tokens
+zerion swap <from> <to> <amount> [--to-chain <chain>]    # Quote
+zerion swap <from> <to> <amount> --yes                    # Execute
+zerion bridge <token> <chain> <amount> --yes              # Bridge
+zerion search <query>                                     # Token search
+zerion swap tokens [chain]                                # Available tokens
 
 # Agent management
-zerion-cli agent create-token --name <bot> --wallet <wallet>
-zerion-cli agent list-tokens
-zerion-cli agent revoke-token --name <bot>
+zerion agent create-token --name <bot> --wallet <wallet>
+zerion agent list-tokens
+zerion agent revoke-token --name <bot>
 
 # Security policies
-zerion-cli agent create-policy --name <name> [--chains ...] [--deny-transfers] [--expires ...]
-zerion-cli agent list-policies
-zerion-cli agent delete-policy <id>
+zerion agent create-policy --name <name> [--chains ...] [--deny-transfers] [--expires ...]
+zerion agent list-policies
+zerion agent delete-policy <id>
 ```
 
 ## Safety Rules

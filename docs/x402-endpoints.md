@@ -64,7 +64,7 @@ https://api.zerion.io/v1
 ### CLI
 
 ```bash
-zerion-cli wallet portfolio 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 --x402
+zerion wallet portfolio 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 --x402
 ```
 
 ### curl
@@ -77,7 +77,7 @@ curl https://api.zerion.io/v1/wallets/0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045
 
 ```bash
 export ZERION_X402=true
-zerion-cli wallet analyze 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045
+zerion wallet analyze 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045
 ```
 
 ## Pricing

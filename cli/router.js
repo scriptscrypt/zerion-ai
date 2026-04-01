@@ -1,6 +1,6 @@
 /**
  * Command router — maps "scope action" to handler functions.
- * Pattern: zerion-cli <scope> <action> [args...] [--flags]
+ * Pattern: zerion <scope> <action> [args...] [--flags]
  */
 
 import { parseFlags } from "./lib/util/flags.js";
@@ -12,14 +12,14 @@ export function register(scope, action, handler) {
   commands.set(`${scope} ${action}`, handler);
 }
 
-// Also support single-word commands (e.g., "zerion-cli search")
+// Also support single-word commands (e.g., "zerion search")
 export function registerSingle(name, handler) {
   commands.set(name, handler);
 }
 
 function printUsage() {
   const usage = {
-    usage: "zerion-cli <command> [options]",
+    usage: "zerion <command> [options]",
     wallet_management: {
       "wallet create --name <name>": "Create encrypted wallet (EVM + Solana)",
       "wallet import --name <name> --key": "Import from private key (interactive prompt)",
@@ -150,7 +150,7 @@ export async function dispatch(argv) {
   printError(
     "unknown_command",
     `Unknown command: ${rest.join(" ")}`,
-    { suggestion: "Run 'zerion-cli --help' to see available commands" }
+    { suggestion: "Run 'zerion --help' to see available commands" }
   );
   process.exit(1);
 }

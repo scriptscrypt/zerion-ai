@@ -5,9 +5,9 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const BIN = join(__dirname, "../cli/zerion-cli.js");
+const BIN = join(__dirname, "../cli/zerion.js");
 
-describe("zerion-cli", () => {
+describe("zerion", () => {
   it("prints help", async () => {
     const output = await new Promise((resolve, reject) => {
       execFile("node", [BIN, "--help"], (error, stdout) => {

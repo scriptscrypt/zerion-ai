@@ -15,5 +15,5 @@
     },
     "required": ["query"]
   },
-  "cli": "zerion-cli search {query} [--chain {chain}]"
+  "cli": "zerion search {query} [--chain {chain}]"
 }

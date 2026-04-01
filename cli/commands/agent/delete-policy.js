@@ -6,7 +6,7 @@ export default async function agentDeletePolicy(args, flags) {
 
   if (!id) {
     printError("missing_args", "Policy ID required", {
-      example: "zerion-cli agent delete-policy --id policy-base-only-a1b2c3d4",
+      example: "zerion agent delete-policy --id policy-base-only-a1b2c3d4",
     });
     process.exit(1);
   }

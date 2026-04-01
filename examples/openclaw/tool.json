@@ -1,7 +1,7 @@
 {
   "name": "zerion-wallet-analysis",
   "description": "Read-only wallet analysis using Zerion. Returns JSON.",
-  "command": "zerion-cli",
+  "command": "zerion",
   "args": [
     "wallet",
     "analyze",

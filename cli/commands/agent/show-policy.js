@@ -7,7 +7,7 @@ export default async function agentShowPolicy(args, flags) {
 
   if (!id) {
     printError("missing_args", "Policy ID or name required", {
-      example: "zerion-cli agent show-policy --id policy-base-only-a1b2c3d4",
+      example: "zerion agent show-policy --id policy-base-only-a1b2c3d4",
     });
     process.exit(1);
   }

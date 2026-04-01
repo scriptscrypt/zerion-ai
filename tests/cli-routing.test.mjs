@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const BIN = join(__dirname, "../cli/zerion-cli.js");
+const BIN = join(__dirname, "../cli/zerion.js");
 
 function run(args, env = {}) {
   return new Promise((resolve) => {
