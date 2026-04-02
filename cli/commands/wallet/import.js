@@ -17,7 +17,7 @@ async function resolveSecretInput(flags, flagName, fileFlagName, prompt) {
       throw new Error(`Not a regular file: ${filePath}`);
     }
     const realPath = realpathSync(filePath);
-    if (/^\/(etc|proc|sys|dev)\//.test(realPath)) {
+    if (/^(\/(private\/)?)(etc|proc|sys|dev)\//.test(realPath)) {
       throw new Error(`Refusing to read sensitive system path: ${realPath}`);
     }
     return readFileSync(filePath, "utf-8").trim();

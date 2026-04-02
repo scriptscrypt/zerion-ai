@@ -84,7 +84,7 @@ export async function readPassphrase({ confirm = false, passphraseFile = null } 
 
     // Reject sensitive system paths (check after resolving to catch traversal)
     const realPath = realpathSync(filePath);
-    if (/^\/(etc|proc|sys|dev)\//.test(realPath)) {
+    if (/^(\/(private\/)?)(etc|proc|sys|dev)\//.test(realPath)) {
       throw new Error(`Refusing to read system path as passphrase file: ${realPath}`);
     }
 
