@@ -65,9 +65,7 @@ export WALLET_PRIVATE_KEY="5C1y..."  # Solana — base58 encoded keypair
 export EVM_PRIVATE_KEY="0x..."
 export SOLANA_PRIVATE_KEY="5C1y..."
 export ZERION_X402_PREFER_SOLANA=true  # optional: prefer Solana when both are set
-```
 
-```bash
 # Per-command flag
 zerion-cli wallet analyze <address> --x402
 

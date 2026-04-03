@@ -43,12 +43,12 @@ async function getX402Fetch() {
     );
   }
 
-  const { wrapFetchWithPayment, x402Client } = await import("@x402/fetch");
-  const client = new x402Client();
-
   if (EVM_PRIVATE_KEY && !isEvmKey(EVM_PRIVATE_KEY)) {
     throw new Error("EVM_PRIVATE_KEY must be a 0x-prefixed hex string.");
   }
+
+  const { wrapFetchWithPayment, x402Client } = await import("@x402/fetch");
+  const client = new x402Client();
 
   if (evmKey) {
     const { registerExactEvmScheme } = await import("@x402/evm/exact/client");
