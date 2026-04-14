@@ -23,9 +23,18 @@ export default async function agentListTokens(_args, _flags) {
     print({
       tokens: tokens.map((t) => {
         const walletName = walletNames.get(t.id);
+        const policies = (t.policyIds || []).map((pid) => {
+          try {
+            const p = ows.getPolicy(pid);
+            return { id: pid, name: p.name || pid };
+          } catch {
+            return { id: pid, name: pid };
+          }
+        });
         return {
           name: t.name,
           wallet: walletName,
+          policies,
           active: walletName === defaultWallet && newestByWallet.get(walletName)?.id === t.id,
           expiresAt: t.expiresAt,
           createdAt: t.createdAt,

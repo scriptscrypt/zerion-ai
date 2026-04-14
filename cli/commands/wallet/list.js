@@ -3,6 +3,28 @@ import { print, printError } from "../../lib/util/output.js";
 import { getConfigValue, getWalletOrigin, getWalletAddresses } from "../../lib/config.js";
 import { formatWalletList } from "../../lib/util/format.js";
 
+/**
+ * Find the newest agent token for a wallet and resolve its policy names.
+ */
+function getActivePolicies(walletName) {
+  const tokens = ows.listAgentTokens();
+  const active = tokens
+    .filter((t) => {
+      const wid = t.walletIds?.[0];
+      return wid && ows.getWalletNameById(wid) === walletName;
+    })
+    .sort((a, b) => (b.createdAt > a.createdAt ? 1 : -1))[0];
+  if (!active?.policyIds?.length) return [];
+  return active.policyIds.map((pid) => {
+    try {
+      const p = ows.getPolicy(pid);
+      return p.name || pid;
+    } catch {
+      return pid;
+    }
+  });
+}
+
 export default async function walletList(_args, flags) {
   try {
     const allWallets = ows.listWallets();
@@ -30,6 +52,7 @@ export default async function walletList(_args, flags) {
         name: w.name,
         ...getWalletAddresses(w, getWalletOrigin(w.name)),
         isDefault: w.name === defaultWallet,
+        policies: getActivePolicies(w.name),
       })),
       total: filtered.length,
       count: paged.length,
