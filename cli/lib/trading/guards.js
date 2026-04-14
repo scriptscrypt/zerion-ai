@@ -4,7 +4,7 @@
  */
 
 import { pathToFileURL } from "node:url";
-import { getAgentToken, listAgentTokens, getPolicy } from "../wallet/keystore.js";
+import { getAgentToken, listAgentTokens, getPolicy, getWalletNameById } from "../wallet/keystore.js";
 import { getConfigValue } from "../config.js";
 import { printError } from "../util/output.js";
 
@@ -36,15 +36,14 @@ export async function enforceExecutablePolicies(txInfo) {
   const walletName = getConfigValue("defaultWallet");
   if (!walletName) return;
 
-  // Find the active API key's policy IDs
+  // Find the newest API key for the default wallet
   const tokens = listAgentTokens();
   const activeKey = tokens
     .filter((t) => {
-      const wn = t.walletIds?.[0];
-      return wn != null;
+      const wid = t.walletIds?.[0];
+      return wid && getWalletNameById(wid) === walletName;
     })
-    .sort((a, b) => (b.createdAt > a.createdAt ? 1 : -1))
-    .find((t) => t.walletIds?.[0] != null);
+    .sort((a, b) => (b.createdAt > a.createdAt ? 1 : -1))[0];
   if (!activeKey?.policyIds?.length) return;
 
   const ctx = {
@@ -57,7 +56,15 @@ export async function enforceExecutablePolicies(txInfo) {
 
   for (const pid of activeKey.policyIds) {
     let policy;
-    try { policy = getPolicy(pid); } catch { continue; }
+    try {
+      policy = getPolicy(pid);
+    } catch {
+      // Fail-closed: if a policy can't be loaded, block the transaction
+      printError("policy_unavailable", `Policy "${pid}" could not be loaded — blocking transaction`, {
+        suggestion: "Check policies: zerion agent list-policies",
+      });
+      process.exit(1);
+    }
     const scripts = policy.config?.scripts || [];
     for (const script of scripts) {
       try {
