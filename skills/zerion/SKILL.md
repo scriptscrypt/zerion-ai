@@ -104,6 +104,7 @@ zerion wallet create --name my-bot
 | `WALLET_PRIVATE_KEY` | Yes (for x402) | EVM private key for x402 payments on Base |
 | `ZERION_X402` | No | Set `true` to enable x402 globally |
 | `SOLANA_RPC_URL` | No | Custom Solana RPC (default: mainnet-beta) |
+| `ETH_RPC_URL` | No | Custom Ethereum RPC (used for ENS resolution) |
 | `ZERION_API_BASE` | No | Override API base URL |
 
 ## Config (`~/.zerion/config.json`)
@@ -166,9 +167,8 @@ zerion swap <from> <to> <amount> --slippage <percent>     # Custom slippage tole
 zerion swap <from> <to> <amount> --wallet <name>          # Use specific wallet
 zerion swap tokens                                        # List swap-available tokens (all chains)
 zerion swap tokens <chain>                                # List swap-available tokens for chain
-zerion bridge <token> <chain> <amount>                    # Bridge tokens cross-chain
-zerion bridge <token> <chain> <amount> --from-chain <chain>  # Specify source chain
-zerion bridge <token> <chain> <amount> --to-token <tok>   # Bridge + swap on destination
+zerion bridge <token> <chain> <amount> --from-chain <chain>  # Bridge tokens cross-chain
+zerion bridge <token> <chain> <amount> --from-chain <chain> --to-token <tok>  # Bridge + swap
 zerion send <token> <amount> --to <address> --chain <chain>  # Send native or ERC-20 transfer
 zerion search <query>                                     # Search for tokens by name, symbol, or address
 zerion search <query> --chain <chain>                     # Search within a specific chain
@@ -184,7 +184,8 @@ A security policy is always required. If `--policy` is omitted, an interactive p
 zerion agent create-token --name <bot> --wallet <wallet>  # Interactive policy setup
 zerion agent create-token --name <bot> --wallet <wallet> --policy <id>  # With existing policy
 zerion agent create-token --name <bot> --wallet <wallet> --policy <id1>,<id2>  # Multiple policies
-zerion agent list-tokens                                  # List active agent tokens
+zerion agent list-tokens                                  # List agent tokens (shows active status)
+zerion agent use-token --wallet <wallet>                  # Switch active agent token by wallet
 zerion agent revoke-token --name <bot>                    # Revoke by name
 zerion agent revoke-token --id <id>                       # Revoke by ID
 ```

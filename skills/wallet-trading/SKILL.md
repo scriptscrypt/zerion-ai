@@ -95,11 +95,11 @@ zerion swap ETH USDC 0.1 --to-chain arbitrum --timeout 300
 ### Bridge tokens
 
 ```bash
-# Bridge ETH to Arbitrum
-zerion bridge ETH arbitrum 0.1
+# Bridge ETH from Base to Arbitrum
+zerion bridge ETH arbitrum 0.1 --from-chain base
 
-# Bridge + swap (bridge ETH to Arbitrum, receive USDC)
-zerion bridge ETH arbitrum 0.1 --to-token USDC
+# Bridge + swap (bridge ETH from Base to Arbitrum, receive USDC)
+zerion bridge ETH arbitrum 0.1 --from-chain base --to-token USDC
 ```
 
 ### Send / transfer tokens

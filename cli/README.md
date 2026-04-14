@@ -69,8 +69,8 @@ All trading commands require an agent token (see below).
 zerion swap <from> <to> <amount>                             Swap tokens
 zerion swap <from> <to> <amount> --to-chain <chain>          Cross-chain swap
 zerion swap tokens [chain]                                   List tokens available for swap
-zerion bridge <token> <chain> <amount>                       Bridge tokens cross-chain
-zerion bridge <token> <chain> <amount> --to-token <tok>      Bridge + swap on destination
+zerion bridge <token> <chain> <amount> --from-chain <chain>   Bridge tokens cross-chain
+zerion bridge <token> <chain> <amount> --from-chain <chain> --to-token <tok>  Bridge + swap
 zerion send <token> <amount> --to <address> --chain <chain>  Send native or ERC-20 transfer
 zerion search <query>                                        Search for tokens by name or symbol
 ```
@@ -83,7 +83,8 @@ Required for all trading commands (swap, bridge, send). A security policy is alw
 zerion agent create-token --name <bot> --wallet <wallet>     Create token (interactive policy setup)
 zerion agent create-token --name <bot> --wallet <w> --policy <id>  Create with existing policy
 zerion wallet create --name <bot>                            Create wallet (includes token setup)
-zerion agent list-tokens                                     List active agent tokens
+zerion agent list-tokens                                     List agent tokens (shows active status)
+zerion agent use-token --wallet <wallet>                     Switch active agent token by wallet
 zerion agent revoke-token --name <bot>                       Revoke an agent token
 ```
 
@@ -145,6 +146,10 @@ zerion --version                         Show version
 | `--watch <name>` | Use watched wallet by name |
 | `--chain <chain>` | Specify chain (default: ethereum) |
 | `--to-chain <chain>` | Destination chain for cross-chain swaps |
+| `--from-chain <chain>` | Source chain for bridge commands |
+| `--to <address>` | Recipient address for send command |
+| `--to-token <token>` | Destination token for bridge + swap |
+| `--timeout <seconds>` | Transaction confirmation timeout (default: 120s) |
 | `--positions all\|simple\|defi` | Filter positions type |
 | `--limit <n>` | Limit results (default: 20 for wallet list) |
 | `--offset <n>` | Skip first N results (pagination) |
@@ -164,6 +169,7 @@ zerion --version                         Show version
 | `WALLET_PRIVATE_KEY` | Yes (for x402) | EVM private key for x402 payments on Base |
 | `ZERION_X402` | No | Set `true` to enable x402 globally |
 | `SOLANA_RPC_URL` | No | Custom Solana RPC endpoint |
+| `ETH_RPC_URL` | No | Custom Ethereum RPC endpoint (ENS resolution) |
 
 ## Supported chains
 
