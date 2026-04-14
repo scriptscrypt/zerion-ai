@@ -5,7 +5,7 @@
 
 import { Buffer } from "node:buffer";
 import * as ows from "@open-wallet-standard/core";
-import { getConfigValue } from "../config.js";
+import { getConfigValue, getActiveAgentToken } from "../config.js";
 
 function extractEvmAddress(wallet) {
   const evmAccount = wallet.accounts.find((a) =>
@@ -178,7 +178,7 @@ export function revokeAgentToken(idOrName) {
  * OWS validates the token at signing time — if revoked, signing will fail.
  */
 export function getAgentToken() {
-  return process.env.ZERION_AGENT_TOKEN || getConfigValue("agentToken") || null;
+  return process.env.ZERION_AGENT_TOKEN || getActiveAgentToken() || null;
 }
 
 /**

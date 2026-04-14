@@ -1,6 +1,6 @@
 import * as ows from "../../lib/wallet/keystore.js";
 import { print, printError } from "../../lib/util/output.js";
-import { getConfigValue, setConfigValue } from "../../lib/config.js";
+import { getConfigValue, setConfigValue, unsetConfigValue, removeAgentTokensForWallet, listSavedAgentTokens } from "../../lib/config.js";
 import { readPassphrase, readSecret } from "../../lib/util/prompt.js";
 
 export default async function walletDelete(args, flags) {
@@ -51,16 +51,66 @@ export default async function walletDelete(args, flags) {
       process.exit(0);
     }
 
+    // Revoke any agent tokens tied to this wallet
+    const revokedTokens = revokeWalletTokens(wallet.id);
+
+    // Delete the wallet
     ows.deleteWallet(walletName);
 
-    // Clear default wallet if this was it
-    if (getConfigValue("defaultWallet") === walletName) {
-      setConfigValue("defaultWallet", null);
+    // Clean up config
+    const result = { deleted: walletName, success: true };
+
+    // Clear agent tokens tied to this wallet (also updates activeTokenWallet)
+    if (revokedTokens > 0) {
+      removeAgentTokensForWallet(walletName);
+      result.agentTokenRevoked = true;
     }
 
-    print({ deleted: walletName, success: true });
+    // Clean up wallet origin tracking
+    const origins = getConfigValue("walletOrigins") || {};
+    if (origins[walletName]) {
+      delete origins[walletName];
+      setConfigValue("walletOrigins", origins);
+    }
+
+    // Promote another wallet as default if this was the default
+    if (getConfigValue("defaultWallet") === walletName) {
+      const remaining = ows.listWallets();
+      if (remaining.length > 0) {
+        const newDefault = remaining[0].name;
+        setConfigValue("defaultWallet", newDefault);
+        result.newDefaultWallet = newDefault;
+        process.stderr.write(`Default wallet changed to "${newDefault}".\n`);
+      } else {
+        unsetConfigValue("defaultWallet");
+        result.newDefaultWallet = null;
+      }
+    }
+
+    if (revokedTokens > 0) {
+      process.stderr.write(
+        "Agent token revoked — create a new one for your remaining wallet:\n" +
+        "  zerion agent create-token --name <name> --wallet <wallet>\n\n"
+      );
+    }
+
+    print(result);
   } catch (err) {
     printError("delete_error", `Failed to delete wallet: ${err.message}`);
     process.exit(1);
   }
+}
+
+function revokeWalletTokens(walletId) {
+  let revoked = 0;
+  const tokens = ows.listAgentTokens();
+  for (const t of tokens) {
+    if (t.walletIds && t.walletIds.includes(walletId)) {
+      try {
+        ows.revokeAgentToken(t.id);
+        revoked++;
+      } catch { /* token may already be invalid */ }
+    }
+  }
+  return revoked;
 }

@@ -50,6 +50,7 @@ function printUsage() {
     agent_tokens: {
       "agent create-token --name <bot> --wallet <wallet>": "Create scoped API token for unattended trading",
       "agent list-tokens": "List active agent tokens",
+      "agent use-token --wallet <wallet>": "Switch active agent token by wallet",
       "agent revoke-token --name <bot>": "Revoke an agent token",
       "_usage": "Token is saved to config automatically. Required for swap/bridge/send.",
     },

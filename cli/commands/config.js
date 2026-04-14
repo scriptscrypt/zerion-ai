@@ -1,9 +1,9 @@
 import { loadConfig, getConfigValue, setConfigValue, unsetConfigValue } from "../lib/config.js";
 import { print, printError } from "../lib/util/output.js";
 
-const VALID_KEYS = ["apiKey", "agentToken", "defaultWallet", "slippage", "defaultChain"];
-const SENSITIVE_KEYS = new Set(["apiKey", "agentToken"]);
-const INTERNAL_KEYS = new Set(["walletOrigins"]);
+const VALID_KEYS = ["apiKey", "defaultWallet", "slippage", "defaultChain"];
+const SENSITIVE_KEYS = new Set(["apiKey"]);
+const INTERNAL_KEYS = new Set(["walletOrigins", "agentTokens"]);
 
 function redact(key, val) {
   if (!SENSITIVE_KEYS.has(key) || !val) return val;

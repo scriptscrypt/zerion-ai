@@ -1,6 +1,6 @@
 import * as ows from "../../lib/wallet/keystore.js";
 import { print, printError } from "../../lib/util/output.js";
-import { getConfigValue, setConfigValue } from "../../lib/config.js";
+import { getConfigValue, setConfigValue, saveAgentToken } from "../../lib/config.js";
 import { readPassphrase } from "../../lib/util/prompt.js";
 import { pickPolicyInteractive } from "../../lib/wallet/policy-picker.js";
 
@@ -49,7 +49,8 @@ export default async function agentCreateToken(args, flags) {
 
   try {
     const result = ows.createAgentToken(name, walletName, passphrase, flags.expires, policyIds);
-    setConfigValue("agentToken", result.token);
+    saveAgentToken(walletName, result.token);
+    setConfigValue("defaultWallet", walletName);
 
     process.stderr.write(
       "\nAgent token saved to config. All trading commands will use it automatically.\n\n"

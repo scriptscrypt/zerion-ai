@@ -7,7 +7,7 @@
 
 import * as ows from "./keystore.js";
 import { print } from "../util/output.js";
-import { setConfigValue } from "../config.js";
+import { saveAgentToken } from "../config.js";
 import { pickPolicyInteractive } from "./policy-picker.js";
 
 /**
@@ -20,7 +20,7 @@ export async function offerAgentToken(walletName, passphrase) {
     const result = ows.createAgentToken(
       `${walletName}-agent`, walletName, passphrase, undefined, [policyId]
     );
-    setConfigValue("agentToken", result.token);
+    saveAgentToken(walletName, result.token);
 
     print({
       agentToken: {

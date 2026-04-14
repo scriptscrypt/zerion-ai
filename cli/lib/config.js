@@ -58,3 +58,34 @@ export function getWalletOrigin(walletName) {
   return origins[walletName] || "mnemonic";
 }
 
+/**
+ * Agent tokens — stored as { walletName: tokenString } map.
+ * Active token is always agentTokens[defaultWallet]. No separate pointer needed.
+ */
+export function saveAgentToken(walletName, token) {
+  const tokens = getConfigValue("agentTokens") || {};
+  tokens[walletName] = token;
+  setConfigValue("agentTokens", tokens);
+}
+
+export function getActiveAgentToken() {
+  const wallet = getConfigValue("defaultWallet");
+  if (!wallet) return null;
+  const tokens = getConfigValue("agentTokens") || {};
+  return tokens[wallet] || null;
+}
+
+export function getAgentTokenForWallet(walletName) {
+  const tokens = getConfigValue("agentTokens") || {};
+  return tokens[walletName] || null;
+}
+
+export function listSavedAgentTokens() {
+  return getConfigValue("agentTokens") || {};
+}
+
+export function removeAgentTokensForWallet(walletName) {
+  const tokens = getConfigValue("agentTokens") || {};
+  delete tokens[walletName];
+  setConfigValue("agentTokens", tokens);
+}
