@@ -3,6 +3,7 @@
  * Zerion CLI never touches raw key material; OWS handles all crypto.
  */
 
+import { Buffer } from "node:buffer";
 import * as ows from "@open-wallet-standard/core";
 import { getConfigValue } from "../config.js";
 
@@ -44,19 +45,68 @@ export function importFromMnemonic(name, mnemonic, passphrase) {
   return formatWallet(wallet);
 }
 
-export function importFromKey(name, privateKeyHex, passphrase) {
-  // Ensure 0x prefix is stripped if present — OWS expects raw hex
-  const key = privateKeyHex.startsWith("0x")
-    ? privateKeyHex.slice(2)
-    : privateKeyHex;
+export function importFromKey(name, privateKey, passphrase, network = "evm") {
+  const key = normalizeKeyToHex(privateKey);
   const wallet = ows.importWalletPrivateKey(
     name,
     key,
     passphrase,
     undefined,
-    "evm"
+    network
   );
   return formatWallet(wallet);
+}
+
+/**
+ * Normalize a private key from any common format to raw hex (no 0x prefix).
+ * Supports: 0x-prefixed hex, raw hex, base58 (Solana/Phantom), byte array JSON.
+ */
+function normalizeKeyToHex(input) {
+  const trimmed = input.trim();
+
+  // 0x-prefixed hex
+  if (trimmed.startsWith("0x")) return trimmed.slice(2);
+
+  // Byte array: [142, 23, 155, ...]
+  if (trimmed.startsWith("[")) {
+    const bytes = JSON.parse(trimmed);
+    // Solana keypairs are 64 bytes (secret + public) — take first 32
+    const secretBytes = bytes.length === 64 ? bytes.slice(0, 32) : bytes;
+    return Buffer.from(secretBytes).toString("hex");
+  }
+
+  // Raw hex (all chars are 0-9a-fA-F)
+  if (/^[0-9a-fA-F]+$/.test(trimmed)) return trimmed;
+
+  // Base58 (Solana/Phantom format)
+  return base58ToHex(trimmed);
+}
+
+const BASE58_ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+
+function base58ToHex(str) {
+  let num = 0n;
+  for (const ch of str) {
+    const idx = BASE58_ALPHABET.indexOf(ch);
+    if (idx === -1) throw new Error(`Invalid base58 character: '${ch}'`);
+    num = num * 58n + BigInt(idx);
+  }
+  let hex = num.toString(16);
+  // Pad to even length
+  if (hex.length % 2 !== 0) hex = "0" + hex;
+
+  // Count leading '1's in base58 — each maps to a 0x00 byte
+  let leadingZeros = 0;
+  for (const ch of str) {
+    if (ch === "1") leadingZeros++;
+    else break;
+  }
+
+  // Solana keypairs exported as base58 are 64 bytes — take first 32
+  const fullHex = "00".repeat(leadingZeros) + hex;
+  if (fullHex.length === 128) return fullHex.slice(0, 64);
+
+  return fullHex;
 }
 
 export function listWallets() {

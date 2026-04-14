@@ -22,8 +22,9 @@ function printUsage() {
     usage: "zerion <command> [options]",
     wallet_management: {
       "wallet create --name <name>": "Create encrypted wallet (EVM + Solana)",
-      "wallet import --name <name> --key": "Import from private key (interactive prompt)",
-      "wallet import --name <name> --mnemonic": "Import from seed phrase",
+      "wallet import --name <name> --evm-key": "Import from EVM private key (interactive)",
+      "wallet import --name <name> --sol-key": "Import from Solana private key (interactive)",
+      "wallet import --name <name> --mnemonic": "Import from seed phrase (all chains)",
       "wallet list": "List all wallets",
       "wallet fund": "Show deposit addresses for funding",
       "wallet backup --wallet <name>": "Export recovery phrase (mnemonic backup)",

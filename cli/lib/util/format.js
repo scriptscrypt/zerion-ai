@@ -58,7 +58,7 @@ export function formatWalletList(data) {
   for (const w of data.wallets) {
     const def = w.isDefault ? ` ${CYAN}(default)${RESET}` : "";
     lines.push(`  ${BOLD}${w.name}${RESET}${def}`);
-    lines.push(`  ${DIM}EVM:${RESET} ${w.evmAddress}`);
+    if (w.evmAddress) lines.push(`  ${DIM}EVM:${RESET} ${w.evmAddress}`);
     if (w.solAddress) lines.push(`  ${DIM}SOL:${RESET} ${w.solAddress}`);
     lines.push("");
   }

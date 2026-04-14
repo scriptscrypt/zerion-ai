@@ -57,7 +57,8 @@ Creates an OWS-encrypted wallet with both EVM and Solana addresses.
 ### Import a wallet
 
 ```bash
-zerion wallet import --name <name> --key        # interactive private key prompt
+zerion wallet import --name <name> --evm-key    # EVM private key (interactive)
+zerion wallet import --name <name> --sol-key    # Solana private key (interactive)
 zerion wallet import --name <name> --mnemonic    # interactive mnemonic prompt
 
 ```

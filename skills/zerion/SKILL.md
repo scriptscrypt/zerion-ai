@@ -120,7 +120,8 @@ zerion wallet create --name my-bot
 ### Wallet management
 ```
 zerion wallet create --name <name>                        # Create encrypted wallet (EVM + Solana)
-zerion wallet import --name <name> --key                  # Import from private key (interactive prompt)
+zerion wallet import --name <name> --evm-key              # Import from EVM private key (interactive)
+zerion wallet import --name <name> --sol-key              # Import from Solana private key (interactive)
 zerion wallet import --name <name> --mnemonic             # Import from seed phrase (interactive prompt)
 zerion wallet list                                        # List all wallets
 zerion wallet list --limit <n>                            # Limit results (default: 20)

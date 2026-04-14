@@ -38,8 +38,9 @@ zerion agent create-token --name my-bot --wallet my-wallet
 
 ```
 zerion wallet create --name <name>                        Create encrypted wallet (EVM + Solana)
-zerion wallet import --name <name> --key                  Import from private key (interactive prompt)
-zerion wallet import --name <name> --mnemonic             Import from seed phrase
+zerion wallet import --name <name> --evm-key              Import from EVM private key (interactive)
+zerion wallet import --name <name> --sol-key              Import from Solana private key (interactive)
+zerion wallet import --name <name> --mnemonic             Import from seed phrase (all chains)
 zerion wallet list                                        List all wallets
 zerion wallet fund                                        Show deposit addresses for funding
 zerion wallet backup --wallet <name>                      Export recovery phrase (mnemonic backup)

@@ -3,6 +3,7 @@ import { print, printError } from "../lib/util/output.js";
 
 const VALID_KEYS = ["apiKey", "agentToken", "defaultWallet", "slippage", "defaultChain"];
 const SENSITIVE_KEYS = new Set(["apiKey", "agentToken"]);
+const INTERNAL_KEYS = new Set(["walletOrigins"]);
 
 function redact(key, val) {
   if (!SENSITIVE_KEYS.has(key) || !val) return val;
@@ -15,9 +16,12 @@ export default async function configCmd(args, flags) {
 
   switch (action) {
     case "list": {
-      const config = { ...loadConfig() };
-      for (const k of SENSITIVE_KEYS) {
-        if (config[k]) config[k] = redact(k, config[k]);
+      const raw = loadConfig();
+      const config = {};
+      for (const [k, v] of Object.entries(raw)) {
+        if (v === null || v === undefined) continue;
+        if (INTERNAL_KEYS.has(k)) continue;
+        config[k] = SENSITIVE_KEYS.has(k) ? redact(k, v) : v;
       }
       print({ config });
       break;

@@ -1,6 +1,6 @@
 import * as ows from "../../lib/wallet/keystore.js";
 import { print, printError } from "../../lib/util/output.js";
-import { getConfigValue } from "../../lib/config.js";
+import { getConfigValue, getWalletOrigin } from "../../lib/config.js";
 import { formatWalletList } from "../../lib/util/format.js";
 
 export default async function walletList(_args, flags) {
@@ -26,12 +26,14 @@ export default async function walletList(_args, flags) {
     const paged = filtered.slice(offset, offset + limit);
 
     const data = {
-      wallets: paged.map((w) => ({
-        name: w.name,
-        evmAddress: w.evmAddress,
-        solAddress: w.solAddress,
-        isDefault: w.name === defaultWallet,
-      })),
+      wallets: paged.map((w) => {
+        const origin = getWalletOrigin(w.name);
+        const entry = { name: w.name };
+        if (origin !== "sol-key") entry.evmAddress = w.evmAddress;
+        if (origin !== "evm-key") entry.solAddress = w.solAddress;
+        entry.isDefault = w.name === defaultWallet;
+        return entry;
+      }),
       total: filtered.length,
       count: paged.length,
       offset,
