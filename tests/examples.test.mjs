@@ -61,10 +61,9 @@ describe("examples", () => {
       assert.equal(data.command, "zerion");
     });
 
-    it("has wallet analyze args structure", () => {
+    it("has analyze args structure", () => {
       const data = readJSON("examples/openclaw/tool.json");
       assert.ok(Array.isArray(data.args));
-      assert.ok(data.args.includes("wallet"));
       assert.ok(data.args.includes("analyze"));
     });
 

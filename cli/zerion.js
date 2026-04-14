@@ -38,17 +38,11 @@ registerSingle("watch", watch);
 
 // --- Analytics (read-only queries: portfolio, positions, PnL, history, analyze) ---
 
-import walletOverview from "./commands/analytics/overview.js";
 import positions from "./commands/analytics/positions.js";
 import portfolio from "./commands/analytics/portfolio.js";
 import pnl from "./commands/analytics/pnl.js";
 import history from "./commands/analytics/history.js";
 import analyze from "./commands/analytics/activity.js";
-register("wallet", "analyze", walletOverview);
-register("wallet", "portfolio", portfolio);
-register("wallet", "positions", positions);
-register("wallet", "transactions", history);
-register("wallet", "pnl", pnl);
 registerSingle("portfolio", portfolio);
 registerSingle("positions", positions);
 registerSingle("pnl", pnl);
@@ -69,7 +63,6 @@ registerSingle("bridge", bridge);
 registerSingle("send", send);
 registerSingle("search", search);
 registerSingle("chains", chainsCmd);
-register("chains", "list", chainsCmd);
 
 // --- Agent (tokens and policies) ---
 

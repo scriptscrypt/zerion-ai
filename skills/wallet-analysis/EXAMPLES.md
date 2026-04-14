@@ -3,7 +3,7 @@
 ## Full wallet analysis
 
 ```bash
-zerion wallet analyze 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045
+zerion analyze 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045
 ```
 
 Returns portfolio total, top 10 positions, 5 recent transactions, and PnL -- all in one call.
@@ -11,13 +11,13 @@ Returns portfolio total, top 10 positions, 5 recent transactions, and PnL -- all
 ## Full analysis with x402 (no API key)
 
 ```bash
-zerion wallet analyze 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 --x402
+zerion analyze 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 --x402
 ```
 
 ## DeFi positions only
 
 ```bash
-zerion wallet positions 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 --positions defi
+zerion positions 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 --positions defi
 ```
 
 Returns only DeFi protocol positions (staking, lending, LP, borrowed).
@@ -25,25 +25,25 @@ Returns only DeFi protocol positions (staking, lending, LP, borrowed).
 ## Positions on a specific chain
 
 ```bash
-zerion wallet positions 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 --chain base
+zerion positions 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 --chain base
 ```
 
 ## Transaction history with custom limit
 
 ```bash
-zerion wallet transactions 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 --limit 25
+zerion history 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 --limit 25
 ```
 
 ## Chain-specific transactions
 
 ```bash
-zerion wallet transactions 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 --chain ethereum --limit 20
+zerion history 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 --chain ethereum --limit 20
 ```
 
 ## Portfolio overview only
 
 ```bash
-zerion wallet portfolio 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045
+zerion portfolio 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045
 ```
 
 Returns total value, chain breakdown, and 1-day change.
@@ -51,7 +51,7 @@ Returns total value, chain breakdown, and 1-day change.
 ## PnL only
 
 ```bash
-zerion wallet pnl 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045
+zerion pnl 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045
 ```
 
 Returns realized/unrealized gains, total invested, fees.

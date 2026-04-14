@@ -94,7 +94,7 @@ describe("wallet-analysis extras", () => {
       join(skillsDir, "wallet-analysis", "SKILL.md"),
       "utf8"
     );
-    assert.match(content, /ENS names also work/i);
+    assert.match(content, /ENS names.*also work/i);
     assert.doesNotMatch(content, /ENS names are not currently supported/i);
   });
 });

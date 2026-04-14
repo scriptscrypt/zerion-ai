@@ -19,7 +19,7 @@ export default async function send(args, flags) {
   const to = flags.to;
 
   if (!token || !amount) {
-    printError("missing_args", "Usage: zerion send <token> <amount> --to <address>", {
+    printError("missing_args", "Usage: zerion send <token> <amount> --to <address> --chain <chain>", {
       example: "zerion send ETH 0.01 --to 0x... --chain base --yes",
     });
     process.exit(1);

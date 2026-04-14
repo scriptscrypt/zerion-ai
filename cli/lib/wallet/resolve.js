@@ -10,23 +10,53 @@ import { isSolana } from "../chain/registry.js";
 import { printError } from "../util/output.js";
 import { resolveWatchAddress } from "./watchlist.js";
 
-let ensClient = null;
+const ENS_TIMEOUT_MS = 10_000;
+const ENS_RETRIES = 2;
+
+const ENS_RPC_URLS = [
+  process.env.ETH_RPC_URL,
+  "https://eth.llamarpc.com",
+  "https://ethereum-rpc.publicnode.com",
+].filter(Boolean);
+
+function makeEnsClient(rpcUrl) {
+  return createPublicClient({ chain: mainnet, transport: http(rpcUrl) });
+}
 
 async function resolveEns(name) {
-  if (!ensClient) {
-    ensClient = createPublicClient({ chain: mainnet, transport: http() });
+  let lastErr;
+  for (let i = 0; i < ENS_RETRIES; i++) {
+    const rpcUrl = ENS_RPC_URLS[i % ENS_RPC_URLS.length];
+    const client = makeEnsClient(rpcUrl);
+    try {
+      const result = await Promise.race([
+        client.getEnsAddress({ name }),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error(`ENS resolution timed out for "${name}"`)), ENS_TIMEOUT_MS)
+        ),
+      ]);
+      return result;
+    } catch (err) {
+      lastErr = err;
+    }
   }
-  return ensClient.getEnsAddress({ name });
+  throw lastErr;
 }
 
 export async function resolveAddress(input) {
   if (/^0x[0-9a-fA-F]{40}$/.test(input)) return input;
+  // Check local wallets first — handles names like "test.zerion.eth"
+  try {
+    return ows.getEvmAddress(input);
+  } catch { /* not a local wallet — continue */ }
   if (input.endsWith(".eth")) {
     const resolved = await resolveEns(input);
     if (!resolved) throw new Error(`Could not resolve ENS name: ${input}`);
     return resolved;
   }
-  return input;
+  // Solana public keys: 44-character base58
+  if (/^[1-9A-HJ-NP-Za-km-z]{43,44}$/.test(input)) return input;
+  throw new Error(`Invalid address: "${input}". Expected a 0x address, ENS name (.eth), or Solana address.`);
 }
 
 export function resolveWallet(flags, args = []) {

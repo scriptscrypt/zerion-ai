@@ -32,12 +32,12 @@ function printUsage() {
       "wallet sync --wallet <name>": "Sync wallet to Zerion app via QR code",
       "wallet sync --all": "Sync all wallets to Zerion app",
     },
-    wallet_analysis: {
-      "wallet analyze <address>": "Full analysis (portfolio, positions, txs, PnL in parallel)",
-      "wallet portfolio <address>": "Portfolio value and top positions",
-      "wallet positions <address>": "Token + DeFi positions (--positions all|simple|defi)",
-      "wallet transactions <address>": "Transaction history (--limit <n>, --chain <chain>)",
-      "wallet pnl <address>": "Profit & loss (realized, unrealized, fees)",
+    analysis: {
+      "analyze <address|name>": "Full analysis (portfolio, positions, txs, PnL in parallel)",
+      "portfolio <address|name>": "Portfolio value and top positions",
+      "positions <address|name>": "Token + DeFi positions (--positions all|simple|defi)",
+      "history <address|name>": "Transaction history (--limit <n>, --chain <chain>)",
+      "pnl <address|name>": "Profit & loss (realized, unrealized, fees)",
     },
     trading: {
       "swap <from> <to> <amount>": "Swap tokens (quote only; add --yes to execute)",
@@ -71,10 +71,6 @@ function printUsage() {
       "config set <key> <value>": "Set config (apiKey, defaultWallet, defaultChain, slippage)",
       "config unset <key>": "Remove a config value (resets to default)",
       "config list": "Show current configuration",
-      "portfolio": "Portfolio (shorthand, uses --wallet or default)",
-      "positions": "Positions (shorthand, uses --wallet or default)",
-      "pnl": "PnL (shorthand, uses --wallet or default)",
-      "history": "Tx history (shorthand, uses --wallet or default)",
     },
     flags: {
       "--wallet <name>": "Specify wallet (default: from config)",
@@ -105,6 +101,7 @@ function printUsage() {
       "WALLET_PRIVATE_KEY": "EVM key for x402 pay-per-call",
       "ZERION_X402": "Set 'true' to enable x402 globally",
       "SOLANA_RPC_URL": "Custom Solana RPC endpoint",
+      "ETH_RPC_URL": "Custom Ethereum RPC endpoint (used for ENS resolution)",
     },
     config: {
       "agentToken": "Trading token (auto-saved by `agent create-token`)",

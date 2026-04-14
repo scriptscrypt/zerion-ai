@@ -78,7 +78,7 @@ Pay $0.01 USDC per request on Base. No API key needed.
 
 ```bash
 export WALLET_PRIVATE_KEY="0x..."
-zerion wallet analyze <address> --x402
+zerion analyze <address> --x402
 
 # Or enable globally
 export ZERION_X402=true
@@ -135,37 +135,26 @@ zerion wallet sync --wallet <name>                        # Sync wallet to Zerio
 zerion wallet sync --all                                  # Sync all wallets to Zerion app
 ```
 
-### Wallet analysis (read — supports --x402)
-```
-zerion wallet analyze <address>                           # Full analysis (portfolio, positions, txs, PnL in parallel)
-zerion wallet analyze <address> --chain <chain>           # Filter by chain
-zerion wallet analyze <address> --positions all|simple|defi  # Filter position type
-zerion wallet analyze <address> --limit <n>               # Limit transactions (default: 10)
-zerion wallet analyze <address> --x402                    # Use x402 pay-per-call
-zerion wallet portfolio <address>                         # Portfolio value + top positions
-zerion wallet positions <address>                         # Token + DeFi positions
-zerion wallet positions <address> --positions all|simple|defi  # Filter: all (default), simple, defi
-zerion wallet positions <address> --chain <chain>         # Filter by chain
-zerion wallet transactions <address>                      # Transaction history
-zerion wallet transactions <address> --limit <n>          # Number of txs (default: 10)
-zerion wallet transactions <address> --chain <chain>      # Filter by chain
-zerion wallet pnl <address>                               # Profit & loss (realized, unrealized, fees)
-```
+### Analysis (read — supports --x402)
 
-Addresses can be `0x...` hex or ENS names (e.g., `vitalik.eth`).
+Accepts `0x...` address, ENS name, or local wallet name. Uses `--wallet` or default wallet if no argument given.
 
-Shorthand (uses --wallet or default wallet instead of address):
 ```
-zerion portfolio                                          # Portfolio (shorthand)
+zerion analyze <address|name>                             # Full analysis (portfolio, positions, txs, PnL in parallel)
+zerion analyze <address|name> --chain <chain>             # Filter by chain
+zerion analyze <address|name> --positions all|simple|defi # Filter position type
+zerion analyze <address|name> --limit <n>                 # Limit transactions (default: 10)
+zerion analyze <address|name> --x402                      # Use x402 pay-per-call
+zerion portfolio <address|name>                           # Portfolio value + top positions
 zerion portfolio --wallet <name>                          # Specific wallet
-zerion portfolio --address <addr/ens>                     # Raw address or ENS
 zerion portfolio --watch <name>                           # Watched wallet by name
-zerion positions                                          # Positions (shorthand)
-zerion positions --wallet <name>                          # Specific wallet
-zerion pnl                                                # PnL (shorthand)
-zerion pnl --wallet <name>                                # Specific wallet
-zerion history                                            # Transaction history (shorthand)
-zerion history --wallet <name>                            # Specific wallet
+zerion positions <address|name>                           # Token + DeFi positions
+zerion positions <address|name> --positions all|simple|defi  # Filter: all (default), simple, defi
+zerion positions <address|name> --chain <chain>           # Filter by chain
+zerion history <address|name>                             # Transaction history
+zerion history <address|name> --limit <n>                 # Number of txs (default: 10)
+zerion history <address|name> --chain <chain>             # Filter by chain
+zerion pnl <address|name>                                 # Profit & loss (realized, unrealized, fees)
 ```
 
 ### Trading

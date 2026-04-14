@@ -49,27 +49,16 @@ zerion wallet sync --wallet <name>                        Sync wallet to Zerion 
 zerion wallet sync --all                                  Sync all wallets to Zerion app
 ```
 
-### Wallet analysis
+### Analysis
+
+Accepts `0x...` address, ENS name (e.g., `vitalik.eth`), or local wallet name. Uses `--wallet` or default wallet if no argument given.
 
 ```
-zerion wallet analyze <address>      Full analysis (portfolio, positions, txs, PnL in parallel)
-zerion wallet portfolio <address>    Portfolio value and top positions
-zerion wallet positions <address>    Token + DeFi positions (--positions all|simple|defi)
-zerion wallet transactions <address> Transaction history (--limit <n>, --chain <chain>)
-zerion wallet pnl <address>          Profit & loss (realized, unrealized, fees)
-```
-
-Addresses can be `0x...` hex or ENS names (e.g., `vitalik.eth`).
-
-#### Shorthands
-
-These use `--wallet` or the default wallet instead of a positional address:
-
-```
-zerion portfolio                     Portfolio (shorthand)
-zerion positions                     Positions (shorthand)
-zerion pnl                           PnL (shorthand)
-zerion history                       Transaction history (shorthand)
+zerion analyze <address|name>        Full analysis (portfolio, positions, txs, PnL in parallel)
+zerion portfolio <address|name>      Portfolio value and top positions
+zerion positions <address|name>      Token + DeFi positions (--positions all|simple|defi)
+zerion history <address|name>        Transaction history (--limit <n>, --chain <chain>)
+zerion pnl <address|name>            Profit & loss (realized, unrealized, fees)
 ```
 
 ### Trading

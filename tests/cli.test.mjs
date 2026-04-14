@@ -16,7 +16,7 @@ describe("zerion", () => {
       });
     });
 
-    assert.match(output, /wallet analyze/);
+    assert.match(output, /analyze/);
     assert.match(output, /chains/);
   });
 
@@ -24,7 +24,7 @@ describe("zerion", () => {
     const { code, stderr } = await new Promise((resolve) => {
       execFile(
         "node",
-        [BIN, "wallet", "analyze", "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"],
+        [BIN, "analyze", "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"],
         { env: { ...process.env, ZERION_API_KEY: "" } },
         (error, _stdout, stderr) => {
           resolve({ code: error?.code ?? 0, stderr });
@@ -32,8 +32,7 @@ describe("zerion", () => {
       );
     });
 
-    // wallet analyze fetches all endpoints in parallel; failures are captured
-    // but at minimum we expect the command to run and produce output
+    // analyze may succeed if API key is in config, or fail gracefully
     assert.equal(code, 0);
   });
 

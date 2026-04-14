@@ -29,7 +29,7 @@ which zerion || npm install -g zerion
 ## Command
 
 ```bash
-zerion chains list [--x402]
+zerion chains [--x402]
 ```
 
 Returns the full chain catalog with IDs and metadata.
@@ -61,17 +61,17 @@ These are the chain IDs currently accepted by the wallet commands in this repo:
 | Zora | `zora` |
 | Blast | `blast` |
 
-`zerion chains list` may return a broader catalog. For `wallet positions`, `wallet transactions`, and `wallet analyze`, use the IDs above unless the CLI validator is expanded.
+`zerion chains` may return a broader catalog. For `positions`, `history`, and `analyze`, use the IDs above unless the CLI validator is expanded.
 
-## Using with wallet commands
+## Using with analysis commands
 
 ```bash
 # Positions on a specific chain
-zerion wallet positions <address> --chain ethereum
+zerion positions <address> --chain ethereum
 
 # Transactions on a specific chain
-zerion wallet transactions <address> --chain base
+zerion history <address> --chain base
 
 # Full analysis filtered to one chain
-zerion wallet analyze <address> --chain arbitrum
+zerion analyze <address> --chain arbitrum
 ```

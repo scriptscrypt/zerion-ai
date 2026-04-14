@@ -7,13 +7,26 @@ export default async function agentListTokens(_args, _flags) {
     const tokens = ows.listAgentTokens();
     const defaultWallet = getConfigValue("defaultWallet");
 
+    // Resolve wallet names once, find newest token per wallet (only that one is usable).
+    const walletNames = new Map();
+    const newestByWallet = new Map();
+    for (const t of tokens) {
+      const wn = t.walletIds?.[0] ? ows.getWalletNameById(t.walletIds[0]) : "unknown";
+      walletNames.set(t.id, wn);
+      if (wn === "unknown") continue;
+      const prev = newestByWallet.get(wn);
+      if (!prev || t.createdAt > prev.createdAt) {
+        newestByWallet.set(wn, t);
+      }
+    }
+
     print({
       tokens: tokens.map((t) => {
-        const walletName = t.walletIds?.[0] ? ows.getWalletNameById(t.walletIds[0]) : "unknown";
+        const walletName = walletNames.get(t.id);
         return {
           name: t.name,
           wallet: walletName,
-          active: walletName === defaultWallet,
+          active: walletName === defaultWallet && newestByWallet.get(walletName)?.id === t.id,
           expiresAt: t.expiresAt,
           createdAt: t.createdAt,
         };

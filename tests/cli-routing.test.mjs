@@ -71,12 +71,12 @@ describe("CLI routing", () => {
       assert.ok(json.count > 0);
     });
 
-    it("chains list also works", async () => {
-      const { code, stdout } = await run(["chains", "list"]);
-      assert.equal(code, 0);
-      const json = parseJSON(stdout);
+    it("chains list removed → unknown_command", async () => {
+      const { code, stderr } = await run(["chains", "list"]);
+      assert.equal(code, 1);
+      const json = parseJSON(stderr);
       assert.ok(json);
-      assert.ok(json.chains);
+      assert.equal(json.error.code, "unknown_command");
     });
 
     it("wallet list shows wallets", async () => {
@@ -97,17 +97,25 @@ describe("CLI routing", () => {
       assert.equal(json.error.code, "unknown_command");
     });
 
-    it("wallet analyze with no address → missing_wallet, exit 1", async () => {
+    it("wallet analyze removed → unknown_command, exit 1", async () => {
       const { code, stderr } = await run(["wallet", "analyze"]);
       assert.equal(code, 1);
       const json = parseJSON(stderr);
       assert.ok(json);
-      assert.equal(json.error.code, "missing_wallet");
+      assert.equal(json.error.code, "unknown_command");
     });
 
-    it("wallet portfolio with no address and no default wallet → no_wallet, exit 1", async () => {
+    it("analyze with no address → missing_args, exit 1", async () => {
+      const { code, stderr } = await run(["analyze"]);
+      assert.equal(code, 1);
+      const json = parseJSON(stderr);
+      assert.ok(json);
+      assert.equal(json.error.code, "missing_args");
+    });
+
+    it("portfolio with no address and no default wallet → no_wallet, exit 1", async () => {
       // Only fails if no default wallet is configured
-      const { code, stderr } = await run(["wallet", "portfolio"], {
+      const { code, stderr } = await run(["portfolio"], {
         HOME: "/tmp/zerion-test-nonexistent",
       });
       assert.equal(code, 1);
@@ -120,7 +128,7 @@ describe("CLI routing", () => {
   describe("output format", () => {
     it("all error outputs are valid JSON on stderr", async () => {
       const errorCases = [
-        ["wallet", "analyze"],         // missing_wallet
+        ["wallet", "analyze"],         // unknown_command (removed subcommand)
         ["foo", "bar"],                // unknown_command
       ];
 
