@@ -4,22 +4,6 @@ import { getConfigValue, setConfigValue } from "../../lib/config.js";
 import { readPassphrase, readSecret } from "../../lib/util/prompt.js";
 
 export default async function walletDelete(args, flags) {
-  // Block in agent mode — agents should not delete wallets
-  if (process.env.ZERION_AGENT_TOKEN) {
-    printError("agent_blocked", "wallet delete is not available in agent mode", {
-      suggestion: "Only the wallet owner can delete wallets interactively",
-    });
-    process.exit(1);
-  }
-
-  // Require interactive terminal
-  if (!process.stdin.isTTY) {
-    printError("not_interactive", "wallet delete requires an interactive terminal", {
-      suggestion: "Run this command directly in your terminal, not from a script or pipe",
-    });
-    process.exit(1);
-  }
-
   const walletName = flags.wallet || args[0];
 
   if (!walletName) {

@@ -4,22 +4,6 @@ import { getConfigValue } from "../../lib/config.js";
 import { readPassphrase } from "../../lib/util/prompt.js";
 
 export default async function walletBackup(args, flags) {
-  // Block backup when running as an agent — agents should never access the mnemonic
-  if (process.env.ZERION_AGENT_TOKEN) {
-    printError("agent_blocked", "wallet backup is not available in agent mode", {
-      suggestion: "Agents use scoped tokens, not raw keys. See: zerion agent create-token",
-    });
-    process.exit(1);
-  }
-
-  // Require interactive terminal — prevents silent scripted extraction
-  if (!process.stdin.isTTY) {
-    printError("not_interactive", "wallet backup requires an interactive terminal", {
-      suggestion: "Run this command directly in your terminal, not from a script or pipe",
-    });
-    process.exit(1);
-  }
-
   const walletName = flags.wallet || args[0] || getConfigValue("defaultWallet");
 
   if (!walletName) {

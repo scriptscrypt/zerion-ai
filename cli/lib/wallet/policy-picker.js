@@ -42,7 +42,8 @@ const EXPIRY_OPTIONS = [
  */
 export async function pickPolicyInteractive(walletName) {
   if (!process.stdin.isTTY) {
-    return buildPolicy(walletName, 7, null).id;
+    const existing = findMatchingPolicy(7, null);
+    return existing ? existing.id : buildPolicy(walletName, 7, null).id;
   }
 
   process.stderr.write("\nSecurity policy setup — a policy is required for agent tokens.\n");
@@ -98,12 +99,14 @@ export async function pickPolicyInteractive(walletName) {
       }
     }
 
-    // Build policy
-    const policy = buildPolicy(walletName, expiryDays, selectedChains);
+    // Build or reuse policy
+    const existing = findMatchingPolicy(expiryDays, selectedChains);
+    const policy = existing || buildPolicy(walletName, expiryDays, selectedChains);
     const parts = ["deny-transfers"];
     if (expiryDays) parts.push(`expires in ${expiryDays} days`);
     if (selectedChains) parts.push(`chains: ${selectedChains.join(", ")}`);
-    process.stderr.write(`${GREEN}✓ Policy created:${RESET} ${parts.join(", ")}\n`);
+    const verb = existing ? "Reusing policy" : "Policy created";
+    process.stderr.write(`${GREEN}✓ ${verb}:${RESET} ${parts.join(", ")}\n`);
 
     return policy.id;
   }
@@ -141,7 +144,7 @@ function formatPolicyDetails(policy) {
   return parts.length > 0 ? `[${parts.join(" · ")}]` : "[no rules]";
 }
 
-// --- Policy builder ---
+// --- Policy builder (with reuse) ---
 
 function buildPolicy(walletName, expiryDays, chainNames) {
   const suffix = chainNames ? "strict" : "standard";
@@ -159,13 +162,50 @@ function buildPolicy(walletName, expiryDays, chainNames) {
     rules.push({ type: "allowed_chains", chain_ids: chainNames.map(toCaip2) });
   }
 
-  // deny-transfers is always included
   const executable = join(POLICIES_DIR, "run-policies.mjs");
   const config = {
     scripts: [join(POLICIES_DIR, "deny-transfers.mjs")],
   };
 
   return ows.createPolicy(id, name, rules, executable, config);
+}
+
+function findMatchingPolicy(expiryDays, chainNames) {
+  const policies = ows.listPolicies();
+  const targetChainIds = chainNames ? chainNames.map(toCaip2).sort() : null;
+
+  for (const p of policies) {
+    // Must have deny-transfers executable
+    const scripts = (p.config?.scripts || []).map((s) => s.split("/").pop());
+    if (!scripts.includes("deny-transfers.mjs")) continue;
+
+    // Check expiry rule
+    const expiryRule = (p.rules || []).find((r) => r.type === "expires_at");
+    if (expiryDays) {
+      if (!expiryRule) continue; // we want expiry but policy has none
+      const remaining = new Date(expiryRule.timestamp).getTime() - Date.now();
+      if (remaining <= 0) continue; // expired
+      // Reuse if at least half the requested duration remains
+      const threshold = (expiryDays * 86400_000) / 2;
+      if (remaining < threshold) continue;
+    } else {
+      if (expiryRule) continue; // we want no expiry but policy has one
+    }
+
+    // Check chain rule
+    const chainRule = (p.rules || []).find((r) => r.type === "allowed_chains");
+    if (targetChainIds) {
+      if (!chainRule) continue;
+      const policyChains = [...(chainRule.chain_ids || [])].sort();
+      if (policyChains.join(",") !== targetChainIds.join(",")) continue;
+    } else {
+      if (chainRule) continue; // we want all chains but policy restricts
+    }
+
+    return p; // match found
+  }
+
+  return null;
 }
 
 // --- Interactive single-select (↑/↓ navigate, Enter confirm, Esc back) ---
