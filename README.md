@@ -39,6 +39,8 @@ Useful docs:
 
 **No API key needed.** Pay $0.01 USDC per request via the [x402 protocol](https://www.x402.org/). Supports EVM (Base) and Solana. The CLI handles the payment handshake automatically.
 
+> Pay-per-call applies to analytics commands only (`portfolio`, `positions`, `history`, `pnl`, `analyze`, `chains`). Trading commands (`swap`, `send`, `bridge`, `search`, …) always use an API key, even when `ZERION_X402` is set globally.
+
 **Single key** — format is auto-detected:
 
 ```bash
@@ -70,6 +72,8 @@ zerion wallet analyze 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045
 ### Option C: MPP Pay-per-call
 
 **No API key needed.** Pay $0.01 USDC per request via the [MPP protocol](https://mpp.dev) on [Tempo](https://tempo.xyz). The CLI handles the payment handshake automatically.
+
+> Like Option B, pay-per-call applies only to analytics commands. Trading commands always use an API key.
 
 ```bash
 export WALLET_PRIVATE_KEY="0x..."   # EVM private key with USDC on Tempo

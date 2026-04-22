@@ -157,8 +157,8 @@ zerion --version                         Show version
 | `--offset <n>` | Skip first N results (pagination) |
 | `--search <query>` | Filter wallets by name or address |
 | `--slippage <percent>` | Slippage tolerance (default: 2%) |
-| `--x402` | Use x402 pay-per-call on Base or Solana (no API key needed) |
-| `--mpp` | Use MPP pay-per-call on Tempo (no API key needed) |
+| `--x402` | Use x402 pay-per-call on Base or Solana (analytics commands only, no API key needed) |
+| `--mpp` | Use MPP pay-per-call on Tempo (analytics commands only, no API key needed) |
 | `--json` | JSON output (default) |
 | `--pretty` | Human-readable output |
 | `--quiet` | Minimal output |
@@ -173,11 +173,13 @@ zerion --version                         Show version
 | `EVM_PRIVATE_KEY` | No | EVM private key for x402 on Base (overrides `WALLET_PRIVATE_KEY` for EVM) |
 | `SOLANA_PRIVATE_KEY` | No | Solana private key for x402 on Solana (overrides `WALLET_PRIVATE_KEY` for Solana) |
 | `TEMPO_PRIVATE_KEY` | No | EVM private key for MPP on Tempo (overrides `WALLET_PRIVATE_KEY` for MPP) |
-| `ZERION_X402` | No | Set `true` to enable x402 globally |
+| `ZERION_X402` | No | Set `true` to enable x402 globally for analytics commands |
 | `ZERION_X402_PREFER_SOLANA` | No | Set `true` to prefer Solana over Base when both keys are set |
-| `ZERION_MPP` | No | Set `true` to enable MPP globally |
+| `ZERION_MPP` | No | Set `true` to enable MPP globally for analytics commands |
 | `SOLANA_RPC_URL` | No | Custom Solana RPC endpoint |
 | `ETH_RPC_URL` | No | Custom Ethereum RPC endpoint (ENS resolution) |
+
+> Pay-per-call (`--x402` / `--mpp` / `ZERION_X402` / `ZERION_MPP`) applies to analytics commands only. Trading commands (`swap`, `send`, `bridge`, `search`, `list-tokens`) always require `ZERION_API_KEY`.
 
 ## Supported chains
 
