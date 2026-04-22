@@ -3,19 +3,50 @@
 
 let _mppFetch = null;
 
+function normalizeMppError(err, address) {
+  const msg = err.message || "";
+  const m = msg.match(/available:\s*(\d+)[^}]*required:\s*(\d+)/);
+  if (m) {
+    const have = (Number(m[1]) / 1e6).toFixed(2);
+    const need = (Number(m[2]) / 1e6).toFixed(2);
+    const e = new Error(
+      `Insufficient USDC on Tempo: have $${have}, need $${need}.\n` +
+      `Fund ${address} with USDC on Tempo to continue.`
+    );
+    e.code = "mpp_insufficient_funds";
+    return e;
+  }
+  const firstLine = msg.split("\n").find((l) => l.trim()) || msg;
+  const e = new Error(`MPP payment failed: ${firstLine.trim()}`);
+  e.code = "mpp_payment_failed";
+  return e;
+}
+
 export async function getMppFetch() {
   if (_mppFetch) return _mppFetch;
-  const privateKey = process.env.TEMPO_PRIVATE_KEY;
+  // TEMPO_PRIVATE_KEY takes precedence; fall back to the shared WALLET_PRIVATE_KEY
+  const privateKey = process.env.TEMPO_PRIVATE_KEY || process.env.WALLET_PRIVATE_KEY;
   if (!privateKey) {
     throw new Error(
-      "TEMPO_PRIVATE_KEY is required for MPP mode. Set it as an environment variable."
+      "MPP mode requires a private key. Set TEMPO_PRIVATE_KEY or WALLET_PRIVATE_KEY."
     );
   }
   const { Mppx, tempo } = await import("mppx/client");
   const { privateKeyToAccount } = await import("viem/accounts");
   const account = privateKeyToAccount(privateKey);
   const mppx = Mppx.create({ methods: [tempo({ account })] });
-  _mppFetch = mppx.fetch.bind(mppx);
+  const inner = mppx.fetch.bind(mppx);
+
+  _mppFetch = async (url, options) => {
+    try {
+      const response = await inner(url, options);
+      process.stderr.write("  \x1b[2m↳ Paid $0.01 via MPP (Tempo)\x1b[0m\n");
+      return response;
+    } catch (err) {
+      throw normalizeMppError(err, account.address);
+    }
+  };
+
   return _mppFetch;
 }
 
