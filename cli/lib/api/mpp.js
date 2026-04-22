@@ -31,6 +31,12 @@ export async function getMppFetch() {
       "MPP mode requires a private key. Set TEMPO_PRIVATE_KEY or WALLET_PRIVATE_KEY."
     );
   }
+  if (!privateKey.startsWith("0x")) {
+    throw new Error(
+      "MPP requires an EVM private key (0x-prefixed).\n" +
+      "WALLET_PRIVATE_KEY appears to be a Solana key — set TEMPO_PRIVATE_KEY=0x... for MPP."
+    );
+  }
   const { Mppx, tempo } = await import("mppx/client");
   const { privateKeyToAccount } = await import("viem/accounts");
   const account = privateKeyToAccount(privateKey);
