@@ -1,16 +1,16 @@
 // Live end-to-end tests for all 4 authorization modes.
 //
-// Each test skips individually unless its dedicated env var is set:
-//   ZERION_API_KEY              — baseline apiKey path (no on-chain cost)
-//   ZERION_TEST_EVM_KEY         — 0x-prefixed EVM key funded with USDC on Base
-//   ZERION_TEST_SOLANA_KEY      — base58 Solana key funded with USDC on Solana
-//   ZERION_TEST_TEMPO_KEY       — 0x-prefixed EVM key funded with USDC on Tempo
+// Each test skips individually unless its dedicated TEST_ env var is set:
+//   TEST_ZERION_API_KEY         — baseline apiKey path (no on-chain cost)
+//   TEST_ZERION_EVM_KEY         — 0x-prefixed EVM key funded with USDC on Base
+//   TEST_ZERION_SOLANA_KEY      — base58 Solana key funded with USDC on Solana
+//   TEST_ZERION_TEMPO_KEY       — 0x-prefixed EVM key funded with USDC on Tempo
 //
 // Each pay-per-call test spends ~$0.01 of USDC per run. Set only the keys
-// for modes you want to verify. Dedicated names (ZERION_TEST_*_KEY) are used
-// intentionally to avoid picking up WALLET_PRIVATE_KEY / EVM_PRIVATE_KEY etc.
-// from the developer's shell profile — those env vars are stripped below
-// before spawning the CLI.
+// for modes you want to verify. The TEST_ prefix is intentional: the dev's
+// real ZERION_API_KEY / WALLET_PRIVATE_KEY / EVM_PRIVATE_KEY etc. from their
+// shell profile are explicitly stripped below before spawning the CLI, so
+// tests never accidentally use production credentials.
 //
 // The endpoint under test is /wallets/{addr}/transactions/?page[size]=1
 // (via `zerion history <addr> --limit 1`) — chosen to minimize response
@@ -21,22 +21,22 @@
 // (https://api.zerion.io/v1).
 //
 //   # apiKey (free — no on-chain payment)
-//   ZERION_API_KEY=<key> ZERION_API_BASE=http://localhost:8000/v1 node --test --test-name-pattern="apiKey" tests/integration/auth.test.mjs
+//   TEST_ZERION_API_KEY=<key> ZERION_API_BASE=http://localhost:8000/v1 node --test --test-name-pattern="apiKey" tests/integration/auth.test.mjs
 //
 //   # x402 on Base
-//   ZERION_TEST_EVM_KEY=0x... ZERION_API_BASE=http://localhost:8000/v1 node --test --test-name-pattern="x402 on Base" tests/integration/auth.test.mjs
+//   TEST_ZERION_EVM_KEY=0x... ZERION_API_BASE=http://localhost:8000/v1 node --test --test-name-pattern="x402 on Base" tests/integration/auth.test.mjs
 //
 //   # x402 on Solana
-//   ZERION_TEST_SOLANA_KEY=<base58> ZERION_API_BASE=http://localhost:8000/v1 node --test --test-name-pattern="x402 on Solana" tests/integration/auth.test.mjs
+//   TEST_ZERION_SOLANA_KEY=<base58> ZERION_API_BASE=http://localhost:8000/v1 node --test --test-name-pattern="x402 on Solana" tests/integration/auth.test.mjs
 //
 //   # MPP on Tempo
-//   ZERION_TEST_TEMPO_KEY=0x... ZERION_API_BASE=http://localhost:8000/v1 node --test --test-name-pattern="MPP" tests/integration/auth.test.mjs
+//   TEST_ZERION_TEMPO_KEY=0x... ZERION_API_BASE=http://localhost:8000/v1 node --test --test-name-pattern="MPP" tests/integration/auth.test.mjs
 //
 //   # all four modes together (~$0.03 total)
-//   ZERION_API_KEY=<key> ZERION_TEST_EVM_KEY=0x... ZERION_TEST_SOLANA_KEY=<base58> ZERION_TEST_TEMPO_KEY=0x... ZERION_API_BASE=http://localhost:8000/v1 npm run test:integration:auth
+//   TEST_ZERION_API_KEY=<key> TEST_ZERION_EVM_KEY=0x... TEST_ZERION_SOLANA_KEY=<base58> TEST_ZERION_TEMPO_KEY=0x... ZERION_API_BASE=http://localhost:8000/v1 npm run test:integration:auth
 //
 // Each mode skips independently if its key is missing, so partial env
-// sets (e.g., just ZERION_API_KEY + ZERION_TEST_EVM_KEY) are fine.
+// sets (e.g., just TEST_ZERION_API_KEY + TEST_ZERION_EVM_KEY) are fine.
 
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
@@ -48,9 +48,11 @@ const BIN = fileURLToPath(import.meta.resolve("#zerion-ai/cli/zerion.js"));
 const VITALIK = "0x42b9dF65B219B3dD36FF330A4dD8f327A6Ada990";
 const HISTORY_ARGS = ["history", VITALIK, "--limit", "1"];
 
-// Env vars that pay-per-call modes read. Stripped from the spawned CLI's
-// environment so the dev's globally-configured keys never leak into tests.
-const PAY_PER_CALL_VARS = [
+// Env vars the CLI reads for auth. Stripped from the spawned CLI's env so
+// the dev's globally-configured credentials never leak into tests; each
+// test re-injects only what it needs via runCli's extraEnv.
+const CLI_AUTH_VARS = [
+  "ZERION_API_KEY",
   "WALLET_PRIVATE_KEY",
   "EVM_PRIVATE_KEY",
   "SOLANA_PRIVATE_KEY",
@@ -62,7 +64,7 @@ const PAY_PER_CALL_VARS = [
 
 function cleanEnv() {
   const env = { ...process.env };
-  for (const k of PAY_PER_CALL_VARS) delete env[k];
+  for (const k of CLI_AUTH_VARS) delete env[k];
   return env;
 }
 
@@ -86,8 +88,8 @@ const skipMsg = (envVar, desc) =>
 
 describe("auth — integration (each mode skips independently)", () => {
   describe("apiKey", () => {
-    const key = process.env.ZERION_API_KEY;
-    const skip = key ? false : `skip: set ZERION_API_KEY to run this test`;
+    const key = process.env.TEST_ZERION_API_KEY;
+    const skip = key ? false : "skip: set TEST_ZERION_API_KEY to run this test";
     it("history via Basic Auth with ZERION_API_KEY", { skip }, async () => {
       const { code, stderr, json } = await runCli(HISTORY_ARGS, { ZERION_API_KEY: key });
       assert.equal(code, 0, `exit ${code}, stderr: ${stderr}`);
@@ -97,12 +99,12 @@ describe("auth — integration (each mode skips independently)", () => {
   });
 
   describe("x402 on Base (EVM)", () => {
-    const key = process.env.ZERION_TEST_EVM_KEY;
-    const skip = key ? false : skipMsg("ZERION_TEST_EVM_KEY", "0x-prefixed EVM key with USDC on Base");
+    const key = process.env.TEST_ZERION_EVM_KEY;
+    const skip = key ? false : skipMsg("TEST_ZERION_EVM_KEY", "0x-prefixed EVM key with USDC on Base");
     it("pays $0.01 via x402 on Base", { skip }, async () => {
       const { code, stderr, json } = await runCli(
         [...HISTORY_ARGS, "--x402"],
-        { ZERION_API_KEY: "", EVM_PRIVATE_KEY: key }
+        { EVM_PRIVATE_KEY: key }
       );
       assert.equal(code, 0, `exit ${code}, stderr: ${stderr}`);
       assert.ok(json, "expected JSON stdout");
@@ -113,12 +115,12 @@ describe("auth — integration (each mode skips independently)", () => {
   });
 
   describe("x402 on Solana", () => {
-    const key = process.env.ZERION_TEST_SOLANA_KEY;
-    const skip = key ? false : skipMsg("ZERION_TEST_SOLANA_KEY", "base58 Solana key with USDC on Solana");
+    const key = process.env.TEST_ZERION_SOLANA_KEY;
+    const skip = key ? false : skipMsg("TEST_ZERION_SOLANA_KEY", "base58 Solana key with USDC on Solana");
     it("pays $0.01 via x402 on Solana", { skip }, async () => {
       const { code, stderr, json } = await runCli(
         [...HISTORY_ARGS, "--x402"],
-        { ZERION_API_KEY: "", SOLANA_PRIVATE_KEY: key }
+        { SOLANA_PRIVATE_KEY: key }
       );
       assert.equal(code, 0, `exit ${code}, stderr: ${stderr}`);
       assert.ok(json, "expected JSON stdout");
@@ -129,12 +131,12 @@ describe("auth — integration (each mode skips independently)", () => {
   });
 
   describe("MPP on Tempo", () => {
-    const key = process.env.ZERION_TEST_TEMPO_KEY;
-    const skip = key ? false : skipMsg("ZERION_TEST_TEMPO_KEY", "0x-prefixed EVM key with USDC on Tempo");
+    const key = process.env.TEST_ZERION_TEMPO_KEY;
+    const skip = key ? false : skipMsg("TEST_ZERION_TEMPO_KEY", "0x-prefixed EVM key with USDC on Tempo");
     it("pays $0.01 via MPP on Tempo", { skip }, async () => {
       const { code, stderr, json } = await runCli(
         [...HISTORY_ARGS, "--mpp"],
-        { ZERION_API_KEY: "", TEMPO_PRIVATE_KEY: key }
+        { TEMPO_PRIVATE_KEY: key }
       );
       assert.equal(code, 0, `exit ${code}, stderr: ${stderr}`);
       assert.ok(json, "expected JSON stdout");
