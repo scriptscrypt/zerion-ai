@@ -1,0 +1,117 @@
+import { readFileSync } from "node:fs";
+import * as ows from "../../lib/wallet/keystore.js";
+import { print, printError } from "../../lib/util/output.js";
+import { getConfigValue } from "../../lib/config.js";
+import { readPassphrase } from "../../lib/util/prompt.js";
+import { toCaip2, SUPPORTED_CHAINS } from "../../lib/chain/registry.js";
+
+/**
+ * Read EIP-712 typed data JSON from one of: --data '<json>', --file <path>, or stdin.
+ */
+async function resolveTypedData(flags, args) {
+  if (flags.data) return String(flags.data);
+  if (flags.file) return readFileSync(flags.file, "utf8");
+  if (args[0] && (args[0].startsWith("{") || args[0].startsWith("["))) return args[0];
+
+  // Fall back to stdin when piped — avoids blocking on interactive TTY
+  if (!process.stdin.isTTY) {
+    return await readStdin();
+  }
+  return null;
+}
+
+function readStdin() {
+  return new Promise((resolve, reject) => {
+    let data = "";
+    process.stdin.setEncoding("utf8");
+    process.stdin.on("data", (chunk) => { data += chunk; });
+    process.stdin.on("end", () => resolve(data));
+    process.stdin.on("error", reject);
+  });
+}
+
+export default async function walletSignTypedData(args, flags) {
+  const walletName = flags.wallet || getConfigValue("defaultWallet");
+  const chain = flags.chain || getConfigValue("defaultChain") || "ethereum";
+
+  if (!walletName) {
+    printError("no_wallet", "No wallet specified", {
+      suggestion: "Use --wallet <name> or set default: zerion config set defaultWallet <name>",
+    });
+    process.exit(1);
+  }
+
+  if (chain === "solana") {
+    printError("evm_only", "EIP-712 typed data signing is EVM-only", {
+      suggestion: "Use `zerion wallet sign-message --chain solana` for Solana message signing",
+    });
+    process.exit(1);
+  }
+
+  if (!SUPPORTED_CHAINS.includes(chain)) {
+    printError("invalid_chain", `Unsupported chain "${chain}"`, {
+      suggestion: `Supported: ${SUPPORTED_CHAINS.filter((c) => c !== "solana").join(", ")}`,
+    });
+    process.exit(1);
+  }
+
+  const typedDataJson = await resolveTypedData(flags, args);
+  if (!typedDataJson || !typedDataJson.trim()) {
+    printError("no_typed_data", "No typed data provided", {
+      suggestion: "Provide --data '<json>', --file <path>, or pipe JSON to stdin",
+    });
+    process.exit(1);
+  }
+
+  let parsed;
+  try {
+    parsed = JSON.parse(typedDataJson);
+  } catch (err) {
+    printError("invalid_json", `Invalid typed data JSON: ${err.message}`, {
+      suggestion: 'Must be a JSON object with { domain, types, primaryType, message }',
+    });
+    process.exit(1);
+  }
+
+  if (!parsed || typeof parsed !== "object" || !parsed.domain || !parsed.types || !parsed.primaryType || !parsed.message) {
+    printError("invalid_typed_data", "Typed data missing required fields", {
+      suggestion: "Expected { domain, types, primaryType, message }",
+    });
+    process.exit(1);
+  }
+
+  const agentToken = ows.getAgentToken();
+  if (!agentToken && process.stderr.isTTY) {
+    process.stderr.write(
+      "\n⚠️  EIP-712 signatures can authorize token approvals (permit2), orders, and meta-transactions.\n" +
+      `   Domain: ${parsed.domain?.name || "?"} (chainId ${parsed.domain?.chainId ?? "?"})\n` +
+      `   Primary type: ${parsed.primaryType}\n` +
+      "   Only sign data from sources you trust.\n\n"
+    );
+  }
+
+  try {
+    const wallet = ows.getWallet(walletName);
+    const passphrase = agentToken || await readPassphrase();
+    const caip2 = toCaip2(chain);
+
+    // Re-serialize to normalize whitespace before handing to OWS
+    const canonical = JSON.stringify(parsed);
+    const result = ows.signTypedData(walletName, canonical, passphrase, caip2);
+
+    print({
+      wallet: wallet.name,
+      address: wallet.evmAddress,
+      chain,
+      primaryType: parsed.primaryType,
+      domain: parsed.domain,
+      signature: result.signature,
+      ...(result.recoveryId != null ? { recoveryId: result.recoveryId } : {}),
+    });
+  } catch (err) {
+    const code = err.message?.includes("passphrase") || err.message?.includes("decrypt")
+      ? "wrong_passphrase" : "sign_error";
+    printError(code, `Failed to sign typed data: ${err.message}`);
+    process.exit(1);
+  }
+}
