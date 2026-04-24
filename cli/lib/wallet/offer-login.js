@@ -46,5 +46,5 @@ export async function offerLogin() {
     return;
   }
 
-  await loginCmd([], { browser: true });
+  await loginCmd([], { browser: true, quiet: true });
 }

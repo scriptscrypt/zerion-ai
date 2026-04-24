@@ -76,7 +76,7 @@ export default async function loginCmd(args, flags) {
   }
 
   if (flags.browser) {
-    banner();
+    if (!flags.quiet) banner();
     return runBrowser();
   }
 
@@ -90,7 +90,7 @@ export default async function loginCmd(args, flags) {
     process.exit(1);
   }
 
-  banner();
+  if (!flags.quiet) banner();
   const w = (s) => process.stderr.write(s + "\n");
   w(`Welcome! To get started, authenticate with your Zerion account.`);
   w("");
