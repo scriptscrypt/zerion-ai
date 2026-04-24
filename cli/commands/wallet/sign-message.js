@@ -1,7 +1,7 @@
 import * as ows from "../../lib/wallet/keystore.js";
 import { print, printError } from "../../lib/util/output.js";
 import { getConfigValue } from "../../lib/config.js";
-import { readPassphrase } from "../../lib/util/prompt.js";
+import { requireAgentToken } from "../../lib/trading/guards.js";
 import { toCaip2, SUPPORTED_CHAINS } from "../../lib/chain/registry.js";
 
 export default async function walletSignMessage(args, flags) {
@@ -38,19 +38,11 @@ export default async function walletSignMessage(args, flags) {
     process.exit(1);
   }
 
-  // Signing arbitrary messages can authorize off-chain actions (SIWE, permit2).
-  // Warn interactive users; agent callers know what they're doing.
-  const agentToken = ows.getAgentToken();
-  if (!agentToken && process.stderr.isTTY) {
-    process.stderr.write(
-      "\n⚠️  Signing arbitrary messages can authorize off-chain actions (SIWE, permit2).\n" +
-      "   Only sign messages from sources you trust.\n\n"
-    );
-  }
+  // Agent token required — same model as swap/bridge/send. No interactive passphrase.
+  const passphrase = requireAgentToken("for signing");
 
   try {
     const wallet = ows.getWallet(walletName);
-    const passphrase = agentToken || await readPassphrase();
     const caip2 = toCaip2(chain);
     const result = ows.signMessage(walletName, message, passphrase, encoding, caip2);
 
@@ -65,9 +57,13 @@ export default async function walletSignMessage(args, flags) {
       ...(result.recoveryId != null ? { recoveryId: result.recoveryId } : {}),
     });
   } catch (err) {
-    const code = err.message?.includes("passphrase") || err.message?.includes("decrypt")
-      ? "wrong_passphrase" : "sign_error";
-    printError(code, `Failed to sign message: ${err.message}`);
+    if (err.message?.includes("API key not found")) {
+      printError("invalid_agent_token", "Agent token is revoked or invalid", {
+        suggestion: "Create a new one: zerion agent create-token --name <name> --wallet <wallet>",
+      });
+    } else {
+      printError(err.code || "sign_error", `Failed to sign message: ${err.message}`);
+    }
     process.exit(1);
   }
 }

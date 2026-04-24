@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import * as ows from "../../lib/wallet/keystore.js";
 import { print, printError } from "../../lib/util/output.js";
 import { getConfigValue } from "../../lib/config.js";
-import { readPassphrase } from "../../lib/util/prompt.js";
+import { requireAgentToken } from "../../lib/trading/guards.js";
 import { toCaip2, SUPPORTED_CHAINS } from "../../lib/chain/registry.js";
 
 /**
@@ -80,19 +80,11 @@ export default async function walletSignTypedData(args, flags) {
     process.exit(1);
   }
 
-  const agentToken = ows.getAgentToken();
-  if (!agentToken && process.stderr.isTTY) {
-    process.stderr.write(
-      "\n⚠️  EIP-712 signatures can authorize token approvals (permit2), orders, and meta-transactions.\n" +
-      `   Domain: ${parsed.domain?.name || "?"} (chainId ${parsed.domain?.chainId ?? "?"})\n` +
-      `   Primary type: ${parsed.primaryType}\n` +
-      "   Only sign data from sources you trust.\n\n"
-    );
-  }
+  // Agent token required — same model as swap/bridge/send. No interactive passphrase.
+  const passphrase = requireAgentToken("for signing");
 
   try {
     const wallet = ows.getWallet(walletName);
-    const passphrase = agentToken || await readPassphrase();
     const caip2 = toCaip2(chain);
 
     // Re-serialize to normalize whitespace before handing to OWS
@@ -109,9 +101,13 @@ export default async function walletSignTypedData(args, flags) {
       ...(result.recoveryId != null ? { recoveryId: result.recoveryId } : {}),
     });
   } catch (err) {
-    const code = err.message?.includes("passphrase") || err.message?.includes("decrypt")
-      ? "wrong_passphrase" : "sign_error";
-    printError(code, `Failed to sign typed data: ${err.message}`);
+    if (err.message?.includes("API key not found")) {
+      printError("invalid_agent_token", "Agent token is revoked or invalid", {
+        suggestion: "Create a new one: zerion agent create-token --name <name> --wallet <wallet>",
+      });
+    } else {
+      printError(err.code || "sign_error", `Failed to sign typed data: ${err.message}`);
+    }
     process.exit(1);
   }
 }

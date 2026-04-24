@@ -13,14 +13,16 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const POLICIES_DIR = resolve(join(__dirname, "..", "..", "policies"));
 
 /**
- * Require a valid agent token for trading execution.
+ * Require a valid agent token for unattended signing (trading, message signing).
  * Prints an actionable error and exits if none is configured.
+ * @param {string} [context] - what the token is needed for, e.g. "for signing" (default: "")
  * @returns {string} The agent token (used as OWS passphrase)
  */
-export function requireAgentToken() {
+export function requireAgentToken(context = "") {
   const token = getAgentToken();
   if (!token) {
-    printError("no_agent_token", "Agent token required for trading", {
+    const suffix = context ? ` ${context}` : "";
+    printError("no_agent_token", `Agent token required${suffix}`, {
       suggestion:
         "Create one: zerion agent create-token --name <name> --wallet <wallet>\n" +
         "It will be saved to your config automatically.",
