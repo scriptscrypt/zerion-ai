@@ -46,5 +46,15 @@ export async function offerLogin() {
     return;
   }
 
-  await loginCmd([], { browser: true, quiet: true });
+  try {
+    await loginCmd([], { browser: true, quiet: true });
+  } catch (err) {
+    // Don't abort the surrounding wallet-setup flow — the wallet is already
+    // created and the user still needs the agent-token offer. Surface the
+    // failure and point them at a clean retry.
+    process.stderr.write(
+      `\nLogin skipped: ${err.message || "failed"}. ` +
+      "Run `zerion login` any time to finish setup.\n\n"
+    );
+  }
 }

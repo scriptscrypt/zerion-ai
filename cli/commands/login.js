@@ -77,7 +77,7 @@ export default async function loginCmd(args, flags) {
 
   if (flags.browser) {
     if (!flags.quiet) banner();
-    return runBrowser();
+    return runBrowser({ quiet: flags.quiet });
   }
 
   // Interactive menu needs a TTY. In non-TTY contexts (CI, pipes, containers),
@@ -103,7 +103,7 @@ export default async function loginCmd(args, flags) {
 
   const choice = await prompt("Enter choice [1/2]: ");
   if (choice === "" || choice === "1") {
-    return runBrowser();
+    return runBrowser({ quiet: flags.quiet });
   }
   if (choice !== "2") {
     printError("invalid_choice", "Enter 1 or 2");
@@ -120,7 +120,7 @@ export default async function loginCmd(args, flags) {
   print({ loggedIn: true, method: "api-key", api: API_BASE });
 }
 
-async function runBrowser() {
+async function runBrowser({ quiet = false } = {}) {
   try {
     const result = await browserLogin();
     setConfigValue("apiKey", result.apiKey);
@@ -135,6 +135,15 @@ async function runBrowser() {
       keyPrefix: maskKey(result.apiKey),
     });
   } catch (err) {
+    // Top-level `zerion login` is a standalone command — exit non-zero on
+    // failure. When called inline from another flow (wallet create/import
+    // pass quiet: true), rethrow so the caller can recover instead of
+    // killing the outer process mid-setup.
+    if (quiet) {
+      const e = err instanceof Error ? err : new Error(String(err));
+      e.code = e.code || "login_failed";
+      throw e;
+    }
     printError("login_failed", err.message || "Login failed");
     process.exit(1);
   }
