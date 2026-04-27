@@ -60,9 +60,10 @@ Skills live in [`zeriontech/zerion-agent`](https://github.com/zeriontech/zerion-
 Zerion CLI splits into two surfaces, by design.
 
 - **Wallet management is manual.** `wallet create`, `import`, `backup`, and `delete` all prompt for a passphrase. `wallet sync` emits a QR code you scan with the Zerion app. These commands assume a human at the keyboard — no key material moves without an explicit gesture.
+- **Agent token setup is manual.** `agent create-token` mints a scoped trading token bound to a specific wallet, and `agent create-policy` attaches the rules it has to obey — allowed chains, expiry, transfer/approval gates, contract allowlists. You do this step yourself so the automation downstream inherits a key it cannot widen.
 - **Analysis and trading are for agents.** `analyze`, `portfolio`, `swap`, `bridge`, and `send` emit JSON to stdout, structured errors to stderr, and skip confirmation dialogs. Once an agent token is configured, trades fire immediately.
 
-The split is the point. You stage a wallet by hand once — create or import a key, set a passphrase, mint an agent token, attach a policy — then hand the agent token to an automation that can only do what the policy allows. Treat agent tokens like API keys with spending power; use [agent policies](#agent-policies) to scope them down to specific chains, addresses, or expiry windows.
+The split is the point. You stage by hand once — create or import a wallet, set a passphrase, mint an agent token, attach a policy — then hand the agent token to an automation that can only do what the policy allows. Treat agent tokens like API keys with spending power; use [agent policies](#agent-policies) to scope them down to specific chains, addresses, or expiry windows.
 
 ## Authentication
 
