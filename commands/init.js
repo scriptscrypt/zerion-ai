@@ -98,10 +98,11 @@ async function ensureApiKey({ yes, browser }) {
   return { ok: true, skipped: false };
 }
 
-function installSkills({ yes, agent }) {
-  const npxArgs = ["-y", "skills", "add", ZERION_AGENT_REPO, "-g"];
+function installSkills({ agent }) {
+  // `init` is a one-shot onboarding command; always install every skill
+  // non-interactively. Users who want to pick can run `zerion setup skills`.
+  const npxArgs = ["-y", "skills", "add", ZERION_AGENT_REPO, "-g", "--yes"];
   if (agent) npxArgs.push("-a", agent);
-  if (yes) npxArgs.push("--yes");
 
   log("  Installing Zerion skills for AI coding agents...");
   const res = spawnSync("npx", npxArgs, { stdio: "inherit" });
@@ -167,7 +168,7 @@ export default async function init(args, flags) {
   log("[3/3] Install agent skills");
   const skillsRes = skipSkills
     ? { ok: true, skipped: true, reason: "flag" }
-    : installSkills({ yes, agent });
+    : installSkills({ agent });
   steps.push({ step: "skills", ...skillsRes });
   if (!skillsRes.ok) {
     printError("init_skills_failed", "Skills install failed", skillsRes);
