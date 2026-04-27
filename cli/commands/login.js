@@ -2,11 +2,11 @@ import readline from "node:readline";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { setConfigValue, getApiKey } from "../lib/config.js";
-import { print, printError } from "../lib/util/output.js";
-import { browserLogin } from "../lib/auth/browser-flow.js";
-import { readSecret } from "../lib/util/prompt.js";
-import { API_BASE, CONFIG_PATH } from "../lib/util/constants.js";
+import { setConfigValue, getApiKey } from "../utils/config.js";
+import { print, printError } from "../utils/common/output.js";
+import { browserLogin } from "../utils/auth/browser-flow.js";
+import { readSecret } from "../utils/common/prompt.js";
+import { API_BASE, CONFIG_PATH } from "../utils/common/constants.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const pkg = JSON.parse(readFileSync(join(__dirname, "../../package.json"), "utf8"));

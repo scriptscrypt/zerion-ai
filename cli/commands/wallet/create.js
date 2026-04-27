@@ -1,10 +1,10 @@
-import * as ows from "../../lib/wallet/keystore.js";
-import { print, printError } from "../../lib/util/output.js";
-import { setConfigValue, getConfigValue } from "../../lib/config.js";
-import { readPassphrase, readSecret } from "../../lib/util/prompt.js";
-import { PASSPHRASE_WARNING } from "../../lib/util/constants.js";
-import { offerAgentToken } from "../../lib/wallet/offer-agent-token.js";
-import { offerLogin } from "../../lib/wallet/offer-login.js";
+import * as ows from "../../utils/wallet/keystore.js";
+import { print, printError } from "../../utils/common/output.js";
+import { setConfigValue, getConfigValue } from "../../utils/config.js";
+import { readPassphrase, readSecret } from "../../utils/common/prompt.js";
+import { PASSPHRASE_WARNING } from "../../utils/common/constants.js";
+import { offerAgentToken } from "../../utils/wallet/offer-agent-token.js";
+import { offerLogin } from "../../utils/wallet/offer-login.js";
 
 export default async function walletCreate(args, flags) {
   const name = flags.name || args[0] || generateName();

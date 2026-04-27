@@ -1,6 +1,6 @@
-import { unsetConfigValue } from "../lib/config.js";
-import { print } from "../lib/util/output.js";
-import { CONFIG_PATH } from "../lib/util/constants.js";
+import { unsetConfigValue } from "../utils/config.js";
+import { print } from "../utils/common/output.js";
+import { CONFIG_PATH } from "../utils/common/constants.js";
 
 export default async function logoutCmd() {
   unsetConfigValue("apiKey");

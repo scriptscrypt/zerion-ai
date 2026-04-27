@@ -3,8 +3,8 @@
  * Pattern: zerion <scope> <action> [args...] [--flags]
  */
 
-import { parseFlags } from "./lib/util/flags.js";
-import { printError } from "./lib/util/output.js";
+import { parseFlags } from "./utils/common/flags.js";
+import { printError } from "./utils/common/output.js";
 
 const commands = new Map();
 
@@ -127,6 +127,11 @@ function printUsage() {
       "defaultWallet": "Default wallet for all commands",
       "defaultChain": "Default chain (default: ethereum)",
       "slippage": "Default slippage % for swaps (default: 2)",
+    },
+    setup: {
+      "init": "One-shot onboarding: install CLI globally, configure API key, install agent skills",
+      "init -y --browser": "Non-interactive init that opens dashboard.zerion.io for the API key",
+      "setup skills": "Install Zerion agent skills via `npx skills add zeriontech/zerion-ai` (45+ hosts)",
     },
     chains: [
       "ethereum", "base", "arbitrum", "optimism", "polygon",

@@ -6,8 +6,8 @@
  */
 
 import { register, registerSingle, dispatch } from "./router.js";
-import { printError, setPrettyMode } from "./lib/util/output.js";
-import { migrateFromZerionCli } from "./lib/util/migrate.js";
+import { printError, setPrettyMode } from "./utils/common/output.js";
+import { migrateFromZerionCli } from "./utils/common/migrate.js";
 
 // Migrate config from ~/.zerion-cli → ~/.zerion on first run after upgrade
 migrateFromZerionCli();
@@ -98,6 +98,16 @@ import loginCmd from "./commands/login.js";
 import logoutCmd from "./commands/logout.js";
 registerSingle("login", loginCmd);
 registerSingle("logout", logoutCmd);
+
+// --- Setup (skills installer wrapper) ---
+
+import setupCmd from "./commands/setup.js";
+registerSingle("setup", setupCmd);
+
+// --- Init (one-shot onboarding: install + auth + skills) ---
+
+import initCmd from "./commands/init.js";
+registerSingle("init", initCmd);
 
 // --- Dispatch ---
 
