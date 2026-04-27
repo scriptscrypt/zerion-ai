@@ -1,6 +1,6 @@
 # Zerion CLI
 
-CLI for [Zerion Wallet](https://zerion.io). Analyze wallets, swap and bridge on-chain with agent-managed wallets across EVM chains and Solana — from the command line.
+CLI for [Zerion Wallet](https://zerion.io). Analyze wallets, swap and bridge on-chain with agent-managed wallets across EVM chains and Solana, all from the command line.
 
 > [!NOTE]
 > **Alpha Preview** — This CLI is under active development. Commands, flags, and output formats may change or be removed without notice between releases. Do not depend on current behavior in production workflows.
