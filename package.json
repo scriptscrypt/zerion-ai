@@ -1,7 +1,7 @@
 {
   "name": "zerion-cli",
   "version": "1.0.0",
-  "description": "Zerion for AI agents and developers: hosted MCP docs, wallet-analysis skill, and a JSON-first CLI.",
+  "description": "Zerion for AI agents and developers: wallet-analysis skill bundle and a JSON-first CLI.",
   "author": "Zerion",
   "type": "module",
   "bin": {
@@ -34,7 +34,6 @@
   "keywords": [
     "zerion",
     "ai",
-    "mcp",
     "wallet",
     "openclaw",
     "cli"

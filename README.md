@@ -23,7 +23,7 @@ npx -y zerion-cli init -y --browser
 
 Requires Node.js 20 or later.
 
-### Setup Skills and MCP
+### Setup Skills
 
 If you are using an AI coding agent (Claude Code, Cursor, Windsurf, Claude Desktop, etc.), you can also install the skills individually with:
 
@@ -32,12 +32,6 @@ zerion setup skills
 ```
 
 This installs skills globally across all detected coding agents by default. Use `--agent <name>` to scope it to one agent, or `-g` to force a global install.
-
-To install the Zerion hosted MCP server (live Zerion API docs as a tool inside your editor):
-
-```bash
-zerion setup mcp --agent <claude-code|cursor|claude-desktop>
-```
 
 ### Agent skills
 
@@ -65,7 +59,7 @@ Zerion CLI splits into two surfaces, by design.
 - **Wallet management and agent token setup are manual.** `wallet create`, `import`, `backup`, and `delete` all prompt for a passphrase. `wallet sync` emits a QR code you scan with the Zerion app. `agent create-token` mints a scoped trading credential bound to a specific wallet, and `agent create-policy` attaches the rules it has to obey — allowed chains, expiry, transfer/approval gates, contract allowlists. The sibling admin commands (`agent list-tokens`, `use-token`, `revoke-token`, `list-policies`, `show-policy`, `delete-policy`) are also gestures you make yourself. No key material moves and no spending credential widens without you in the loop.
 - **Analysis, signing, trading, and discovery are for agents.** `analyze`, `portfolio`, `positions`, `history`, `pnl`, `sign-message`, `sign-typed-data`, `swap`, `bridge`, `send`, `swap tokens`, `search`, `chains`, `wallet list`, `wallet fund`, and `watch list` emit JSON to stdout, structured errors to stderr, and skip confirmation dialogs. Once an agent token is configured, signing and trading fire immediately — the token authorizes operations on behalf of the wallet without a passphrase prompt.
 
-Setup gestures (`init`, `setup skills`, `setup mcp`, `config set/unset/list`, `watch` add/remove) are one-time configuration steps you run yourself before automation takes over.
+Setup gestures (`init`, `setup skills`, `config set/unset/list`, `watch` add/remove) are one-time configuration steps you run yourself before automation takes over.
 
 The split is the point. You stage by hand once — create or import a wallet, set a passphrase, mint an agent token, attach a policy — then hand the agent token to an automation that can only do what the policy allows. Treat agent tokens like API keys with spending power; use [agent policies](#agent-policies) to scope them down to specific chains, addresses, or expiry windows.
 
@@ -236,8 +230,6 @@ Track wallets by name without exposing addresses in commands.
 | `zerion init -y --browser` | Non-interactive init that opens dashboard.zerion.io for the API key | `npx -y zerion-cli init -y --browser` |
 | `zerion setup skills` | Install Zerion agent skills into detected coding agents | `zerion setup skills` |
 | `zerion setup skills --agent claude-code` | Install into a specific agent | `zerion setup skills --agent claude-code` |
-| `zerion setup mcp --agent <name>` | Merge the Zerion hosted-MCP fragment into an agent's config | `zerion setup mcp --agent cursor` |
-| `zerion setup mcp --print` | Print the canonical MCP fragment without writing | `zerion setup mcp --print` |
 
 ### Configuration
 
@@ -347,7 +339,7 @@ To force a specific version, add `Release-As: 2.0.0` in a commit message body.
 
 - **API documentation** — <https://developers.zerion.io/introduction>
 - **Get an API key** — <https://dashboard.zerion.io>
-- **Agent skills + MCP** — <https://github.com/zeriontech/zerion-agent>
+- **Agent skills** — <https://github.com/zeriontech/zerion-agent>
 - **Building with AI** — <https://developers.zerion.io/reference/building-with-ai>
 
 ## License

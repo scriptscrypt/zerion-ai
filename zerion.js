@@ -92,7 +92,7 @@ register("agent", "delete-policy", agentDeletePolicy);
 import configCmd from "./commands/config.js";
 registerSingle("config", configCmd);
 
-// --- Setup (skills + mcp installer wrappers) ---
+// --- Setup (skills installer wrapper) ---
 
 import setupCmd from "./commands/setup.js";
 registerSingle("setup", setupCmd);

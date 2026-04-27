@@ -120,7 +120,6 @@ function printSuccessSummary() {
   log("    → Portfolio         zerion portfolio 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045");
   log("    → Trade             zerion swap usdc eth 100 --chain ethereum");
   log("");
-  log("  → Add MCP:      zerion setup mcp --agent <claude-code|cursor|claude-desktop>");
   log("  → All commands: zerion --help");
   log("");
   log("  Building agent automation? Use `zerion agent create-token` + `agent create-policy`");
