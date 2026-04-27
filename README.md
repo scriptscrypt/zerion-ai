@@ -1,8 +1,8 @@
 # Zerion CLI
 
-The unified, JSON-first CLI for [Zerion](https://zerion.io) — wallet analysis, on-chain trading, and agent-token policy management across 14 EVM chains and Solana.
+CLI for [Zerion Wallet](https://zerion.io). Analyze wallets, swap and bridge on-chain with agent-managed wallets across EVM chains and Solana — from the command line.
 
-> [!WARNING]
+> [!NOTE]
 > **Alpha Preview** — This CLI is under active development. Commands, flags, and output formats may change or be removed without notice between releases. Do not depend on current behavior in production workflows.
 
 ### Built for agents
