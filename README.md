@@ -127,26 +127,6 @@ zerion portfolio 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 --mpp
 export ZERION_MPP=true
 ```
 
-## Quick Start
-
-```bash
-npm install -g zerion-cli
-export ZERION_API_KEY="zk_..."
-zerion analyze 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045
-```
-
-Example output:
-
-```json
-{
-  "wallet": { "query": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" },
-  "portfolio": { "total": 450000, "currency": "usd" },
-  "positions": { "count": 42 },
-  "transactions": { "sampled": 10 },
-  "pnl": { "available": true }
-}
-```
-
 ## Commands
 
 Every command supports `--help` for full flag documentation. Run `zerion --help` for the top-level command list.
