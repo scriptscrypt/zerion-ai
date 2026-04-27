@@ -75,20 +75,19 @@ Three options. The CLI auto-detects which is active.
 
 ### A) API key (recommended)
 
-Get a key at **[dashboard.zerion.io](https://dashboard.zerion.io)** — it's free and takes a minute. Dev keys begin with `zk_dev_`.
+Get a key at **[dashboard.zerion.io](https://dashboard.zerion.io)** — it's free and takes a minute. Keys begin with `zk_`.
 
 ```bash
-export ZERION_API_KEY="zk_dev_..."
+export ZERION_API_KEY="zk_..."
 ```
 
 - HTTP Basic Auth
-- Current dev-key limits: **120 requests/minute**, **5k requests/day**
-- Required for all trading commands (swap, bridge, send)
+- Required for analysis and trading commands (analysis can also use x402 / MPP pay-per-call instead — see options B and C)
 
 You can also persist it via config:
 
 ```bash
-zerion config set apiKey zk_dev_...
+zerion config set apiKey zk_...
 ```
 
 ### B) x402 pay-per-call
@@ -132,7 +131,7 @@ export ZERION_MPP=true
 
 ```bash
 npm install -g zerion-cli
-export ZERION_API_KEY="zk_dev_..."
+export ZERION_API_KEY="zk_..."
 zerion analyze 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045
 ```
 
