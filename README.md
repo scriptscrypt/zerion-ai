@@ -11,33 +11,49 @@ CLI for [Zerion Wallet](https://zerion.io). Analyze wallets, swap and bridge on-
 npm install -g zerion-cli
 ```
 
+Or set up everything in one command (install CLI globally, configure your API key, and add skills across all detected coding agents):
+
+```bash
+npx -y zerion-cli init -y --browser
+```
+
+- `-y` runs setup non-interactively
+- `--browser` opens [dashboard.zerion.io](https://dashboard.zerion.io) so you can grab an API key and paste it back
+- skills install globally to every detected AI coding agent by default
+
 Requires Node.js 20 or later.
 
 ### Setup Skills and MCP
 
-If you are using an AI coding agent (Claude Code, Cursor, Windsurf, Claude Desktop, etc.), install the Zerion skills so the agent knows how to drive the CLI on your behalf:
+If you are using an AI coding agent (Claude Code, Cursor, Windsurf, Claude Desktop, etc.), you can also install the skills individually with:
 
 ```bash
 zerion setup skills
 ```
 
-This installs the [Zerion agent skills](https://github.com/zeriontech/zerion-agent) into every detected coding agent. Use `--agent <name>` to scope it to one editor, or `-g` for global install.
+This installs skills globally across all detected coding agents by default. Use `--agent <name>` to scope it to one agent, or `-g` to force a global install.
 
-To install the Zerion hosted MCP server (live Zerion API docs as a tool):
+To install the Zerion hosted MCP server (live Zerion API docs as a tool inside your editor):
 
 ```bash
-zerion setup mcp
+zerion setup mcp --agent <claude-code|cursor|claude-desktop>
 ```
 
 ### Agent skills
 
-The skill bundle teaches AI coding agents how to use Zerion correctly:
+The `init` command installs the Zerion agent skill bundle into AI coding agents (Cursor, Claude Code, Windsurf, etc.). The bundle teaches them how to drive the CLI:
 
-- **Wallet analysis** — when to call `analyze` vs `portfolio` vs `pnl`, how to interpret the JSON
-- **Trading** — preflight checks, slippage defaults, agent-token + policy setup before swap/bridge/send
-- **Authentication** — choosing between API key, x402, and MPP based on the task
+- **Wallet analysis** — when to call `analyze` vs `portfolio` vs `pnl`, and how to read the JSON
+- **Trading** — preflight checks, slippage defaults, agent-token + policy setup before `swap`, `bridge`, `send`
+- **Authentication** — picking between API key, x402, and MPP based on the task
 
-Reinstall any time with `zerion setup skills`. Skills live in [`zeriontech/zerion-agent`](https://github.com/zeriontech/zerion-agent).
+To reinstall skills manually:
+
+```bash
+zerion setup skills
+```
+
+Skills live in [`zeriontech/zerion-agent`](https://github.com/zeriontech/zerion-agent).
 
 ## Manual setup, agent execution
 
@@ -232,9 +248,11 @@ Track wallets by name without exposing addresses in commands.
 
 | Command | Description |
 |---------|-------------|
+| `zerion init` | One-shot onboarding — install CLI globally, configure API key, install agent skills |
+| `zerion init -y --browser` | Non-interactive init that opens dashboard.zerion.io for the API key |
 | `zerion setup skills` | Install Zerion agent skills into detected coding agents |
 | `zerion setup skills --agent claude-code` | Install into a specific agent |
-| `zerion setup mcp` | Merge the Zerion hosted-MCP fragment into an agent's config |
+| `zerion setup mcp --agent <name>` | Merge the Zerion hosted-MCP fragment into an agent's config |
 | `zerion setup mcp --print` | Print the canonical MCP fragment without writing |
 
 ### Configuration
