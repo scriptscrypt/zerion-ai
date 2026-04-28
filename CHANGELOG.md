@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.1](https://github.com/zeriontech/zerion-ai/compare/v1.0.0...v1.0.1) (2026-04-28)
+
+
+### Features
+
+* unify CLI + agent skills, un-flatten to cli/ ([#28](https://github.com/zeriontech/zerion-ai/issues/28)) ([d21f5b7](https://github.com/zeriontech/zerion-ai/commit/d21f5b7f148d5d8cae62b5c759209d3d1b2b767d))
+
+
+### Miscellaneous Chores
+
+* release 1.0.1 ([#29](https://github.com/zeriontech/zerion-ai/issues/29)) ([4efcbeb](https://github.com/zeriontech/zerion-ai/commit/4efcbebf326b81e20350160fe924dc74a8df194c))
+
 ## [1.0.0](https://github.com/zeriontech/zerion-ai/compare/v0.4.2...v1.0.0) (2026-04-27)
 
 
