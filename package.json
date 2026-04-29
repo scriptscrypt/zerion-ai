@@ -5,7 +5,7 @@
   "author": "Zerion",
   "type": "module",
   "bin": {
-    "zerion": "./cli/zerion.js"
+    "zerion": "cli/zerion.js"
   },
   "files": [
     "cli/zerion.js",
