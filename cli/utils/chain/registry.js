@@ -16,6 +16,7 @@ import {
   zkSync,
   zora,
   blast,
+  monad,
 } from "viem/chains";
 
 const CHAIN_MAP = new Map([
@@ -32,6 +33,7 @@ const CHAIN_MAP = new Map([
   ["zksync-era", { viemChain: zkSync, name: "zkSync Era", nativeCurrency: "ETH" }],
   ["zora", { viemChain: zora, name: "Zora", nativeCurrency: "ETH" }],
   ["blast", { viemChain: blast, name: "Blast", nativeCurrency: "ETH" }],
+  ["monad", { viemChain: monad, name: "Monad", nativeCurrency: "MON" }],
 ]);
 
 // Solana (not in CHAIN_MAP since it uses different infra)

@@ -90,8 +90,8 @@ describe("resolvePositionFilter", () => {
 });
 
 describe("CHAIN_IDS", () => {
-  it("contains 14 chains", () => {
-    assert.equal(CHAIN_IDS.size, 14);
+  it("contains 15 chains", () => {
+    assert.equal(CHAIN_IDS.size, 15);
   });
 
   it("includes key chains", () => {
