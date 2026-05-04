@@ -102,6 +102,11 @@ registerSingle("setup", setupCmd);
 import initCmd from "./commands/init.js";
 registerSingle("init", initCmd);
 
+// --- SendAI ideas (deterministic primitives for the zerion-sendai-ideas skill) ---
+
+import sendaiIdeas from "./commands/sendai-ideas/index.js";
+registerSingle("sendai-ideas", sendaiIdeas);
+
 // --- Dispatch ---
 
 try {

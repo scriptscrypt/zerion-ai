@@ -126,6 +126,12 @@ function printUsage() {
       "init -y --browser": "Non-interactive init that opens dashboard.zerion.io for the API key",
       "setup skills": "Install Zerion agent skills via `npx skills add zeriontech/zerion-ai` (45+ hosts)",
     },
+    ideas: {
+      "sendai-ideas --info": "Skill metadata (modes + CLI primitives) for agent discovery",
+      "sendai-ideas --protocols": "DefiLlama protocol TVL (--chain, --category, --limit, --sort tvl|change_1d|change_7d)",
+      "sendai-ideas --yields": "Yield pools (--chain, --apy-min, --tvl-min, --limit)",
+      "_skill": "Drives the zerion-sendai-ideas skill (discover / validate / landscape / defi-research). Adapted from sendaifun/solana-new (MIT).",
+    },
     chains: [
       "ethereum", "base", "arbitrum", "optimism", "polygon",
       "binance-smart-chain", "avalanche", "gnosis", "scroll",

@@ -35,7 +35,7 @@ npm install -g zerion-cli
 
 Requires Node.js ≥ 20. Authentication for `zerion` analytics is optional (`--x402` works without a key). See the `zerion` umbrella skill for auth details.
 
-No additional setup, no telemetry, no external accounts. The `colosseum-copilot` extension below is optional and only triggered if the user explicitly opts in.
+No additional setup, no telemetry, no external accounts.
 
 ---
 
@@ -165,7 +165,6 @@ Map every relevant competitor, substitute, and adjacent project for a given cryp
    - WebSearch for Solana app directories (Solana Compass, Step Finance, Solscan), GitHub, crypto Twitter, app stores
    - DefiLlama (see Mode 4) for TVL and protocol presence
    - Zerion CLI for any named protocol: `zerion search <name>`, then `zerion analyze <treasury>` for activity
-   - Optional: Colosseum hackathon archive (see extension below) for 5,400+ Solana submissions
 4. Assess defensibility — what's the moat? Distribution, data, network effects, capital efficiency, regulatory positioning, or none?
 5. Rate crowdedness honestly: **empty / sparse / moderate / crowded / saturated**. Don't declare "no competition" unless you've exhausted searches; that usually means the market doesn't exist either.
 6. Write a local artifact (`idea-landscape-YYYYMMDD-HHMMSS.md`) with the full matrix, crowdedness rating, identified moat type, and recommended differentiation angle.
@@ -216,34 +215,6 @@ No API key, no rate limits worth worrying about for a single research session. U
 
 ---
 
-## Optional extension — Colosseum hackathon archive
-
-Colosseum maintains a database of 5,400+ Solana hackathon projects with winner patterns, ML-derived clusters, and gap analysis. Useful when the user wants to know:
-
-- Has someone tried this exact thing in a hackathon?
-- What did winners in this category have in common?
-- Where are the white-space clusters?
-
-**Requires a free Personal Access Token** from <https://arena.colosseum.org/copilot>. **Only mention this extension if the user explicitly asks for hackathon data or opts in** — don't push it on every interaction.
-
-If the user wants to use it:
-
-```bash
-export COLOSSEUM_COPILOT_PAT="<paste-token>"
-
-# Verify
-curl -sH "Authorization: Bearer $COLOSSEUM_COPILOT_PAT" \
-  https://copilot.colosseum.com/api/v1/status
-
-# Search projects
-curl -sH "Authorization: Bearer $COLOSSEUM_COPILOT_PAT" \
-  "https://copilot.colosseum.com/api/v1/projects/search?q=<query>"
-```
-
-Full API: see <https://github.com/sendaifun/solana-new/tree/main/skills/idea/colosseum-copilot> for the upstream guide.
-
----
-
 ## Output format for all modes
 
 Write a markdown artifact in the current working directory:
@@ -274,8 +245,5 @@ This umbrella condenses the SendAI skills. For the longer-form references — in
 - <https://github.com/sendaifun/solana-new/tree/main/skills/idea/validate-idea>
 - <https://github.com/sendaifun/solana-new/tree/main/skills/idea/competitive-landscape>
 - <https://github.com/sendaifun/solana-new/tree/main/skills/idea/defillama-research>
-- <https://github.com/sendaifun/solana-new/tree/main/skills/idea/colosseum-copilot>
-- <https://github.com/sendaifun/solana-new/tree/main/skills/idea/solana-beginner>
-- <https://github.com/sendaifun/solana-new/tree/main/skills/idea/learn>
 
 If the user wants the full SendAI / Superteam skill bundle (Learn → Idea → Build → Launch), point them at <https://github.com/sendaifun/solana-new>.
