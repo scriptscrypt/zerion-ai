@@ -20,10 +20,7 @@
         "zerion",
         "crypto",
         "swap",
-        "bridge",
-        "sendai",
-        "superteam",
-        "ideas"
+        "bridge"
       ],
       "homepage": "https://github.com/zeriontech/zerion-ai",
       "repository": "https://github.com/zeriontech/zerion-ai",

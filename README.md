@@ -39,10 +39,6 @@ Seven skills ship in this repo (under [`./skills/`](./skills/)):
 
 Skills follow the [agentskills.io](https://agentskills.io) open standard — a single `skills/` tree powers every supported host.
 
-### Partner skills
-
-`zerion-sendai-ideas` is adapted from [SendAI / Superteam's `solana-new` idea skills](https://github.com/sendaifun/solana-new/tree/main/skills/idea) under the MIT license. The interview frameworks, scoring rubrics, validation sprints, landscape mappings, and DefiLlama playbooks are derived from that work and condensed into a single umbrella skill that composes with the `zerion` CLI for live on-chain evidence. See [`skills/zerion-sendai-ideas/LICENSE`](./skills/zerion-sendai-ideas/LICENSE) for the full notice. Thanks to **SendAI** and **Superteam**.
-
 ### Install via zerion CLI (recommended)
 
 ```bash

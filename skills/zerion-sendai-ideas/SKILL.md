@@ -1,6 +1,6 @@
 ---
 name: zerion-sendai-ideas
-description: "Crypto idea discovery, validation, competitive landscape, and DeFi market research — adapted from SendAI's solana-new idea skills. Use when a user asks 'what should I build in crypto', 'validate this idea', 'who are my competitors', 'show me TVL data', or wants a structured interview/scoring/landscape pass on a crypto product idea. Composes with zerion-analyze (wallet evidence), zerion search (token reference), and zerion chains (chain catalog) for live on-chain context."
+description: "Crypto idea discovery, validation, competitive landscape, and DeFi market research — adapted from SendAI's solana-new idea skills. Use when a user asks 'what should I build in crypto', 'validate this idea', 'who are my competitors', 'show me TVL data', or wants a structured interview/scoring/landscape pass on a crypto product idea. SendAI surfaces the idea; the Zerion CLI (`zerion analyze`, `zerion history`, `zerion positions`) provides on-chain validation before you build."
 license: MIT
 allowed-tools: Bash, Read, Write, WebFetch, WebSearch
 ---
@@ -10,7 +10,8 @@ allowed-tools: Bash, Read, Write, WebFetch, WebSearch
 > sprints, landscape mappings, and DefiLlama playbooks below are derived from their work and
 > condensed into a single Zerion-flavored umbrella skill. Modifications by Zerion swap the
 > upstream `superstack` telemetry / phase-handoff plumbing for direct composition with the
-> `zerion` CLI (analyze, search, chains, watch). See `LICENSE` in this folder for the full notice.
+> `zerion` CLI (`analyze`, `history`, `positions`) so every idea gets validated against live
+> on-chain evidence before you build. See `LICENSE` in this folder for the full notice.
 
 # Zerion × SendAI — Idea Discovery & Validation
 
@@ -54,9 +55,9 @@ Interview the user until there is real clarity, not just enthusiasm. Generate th
 3. Gate every candidate through the **crypto-necessity test**. Reject ornamental crypto. Redirect to a stronger crypto angle instead of dressing up a weak one.
 4. Score surviving candidates with the **scoring rubric** below.
 5. **Run fresh research** for competitors and active OSS — don't rely solely on training-cutoff knowledge. Use WebSearch + the Zerion CLI for on-chain reality:
-   - `zerion search <token-or-protocol>` for token + project reference
-   - `zerion chains` for the live supported-chain catalog
-   - `zerion analyze <protocol-treasury-or-deployer>` if the user names a comparable project — pulls real portfolio + activity
+   - `zerion analyze <protocol-treasury-or-deployer>` if the user names a comparable project — pulls portfolio, positions, and activity in one pass
+   - `zerion history <addr> --limit 25` to see whether a comparable project is actually being used (or just sitting)
+   - `zerion positions <addr> --positions defi` to see what the comparable's treasury/active wallets actually hold
 6. Produce the shortlist artifact first. Let the user pick one. Then deepen the chosen idea, ideally piping into **Validate**.
 
 ### Crypto-necessity test
@@ -109,8 +110,9 @@ Take an idea (from a prior **Discover** pass or fresh from the user) and run a s
 3. Re-run the crypto-necessity test from Mode 1.
 4. Map risks across **technical, market, regulatory, team**. Each risk gets a severity (low/med/high) and a mitigation note.
 5. Check whether a live product already does this on Solana / EVM. Use:
-   - `zerion search <name-or-symbol>` — does a token already exist?
-   - `zerion analyze <known-deployer-or-treasury>` — is the comparable project active on-chain?
+   - `zerion analyze <known-deployer-or-treasury>` — is the comparable project active on-chain (portfolio + recent activity)?
+   - `zerion history <addr> --limit 25` — are real users actually transacting, or is it dormant?
+   - `zerion positions <addr> --positions defi` — what protocols/positions does it actually hold?
    - WebSearch for Solana app directories, GitHub, crypto Twitter
 6. Apply the **pivot-or-persist** decision (below) to land on a verdict.
 7. Write a local artifact (`idea-validation-YYYYMMDD-HHMMSS.md`) with: idea summary, demand signals, risks, verdict, confidence (0–1), and concrete next steps.
@@ -164,7 +166,7 @@ Map every relevant competitor, substitute, and adjacent project for a given cryp
 3. Search across:
    - WebSearch for Solana app directories (Solana Compass, Step Finance, Solscan), GitHub, crypto Twitter, app stores
    - DefiLlama (see Mode 4) for TVL and protocol presence
-   - Zerion CLI for any named protocol: `zerion search <name>`, then `zerion analyze <treasury>` for activity
+   - Zerion CLI for any named protocol: `zerion analyze <treasury>` for portfolio + activity, then `zerion history <treasury> --limit 25` to confirm it's not abandoned, and `zerion positions <treasury> --positions defi` for live holdings
 4. Assess defensibility — what's the moat? Distribution, data, network effects, capital efficiency, regulatory positioning, or none?
 5. Rate crowdedness honestly: **empty / sparse / moderate / crowded / saturated**. Don't declare "no competition" unless you've exhausted searches; that usually means the market doesn't exist either.
 6. Write a local artifact (`idea-landscape-YYYYMMDD-HHMMSS.md`) with the full matrix, crowdedness rating, identified moat type, and recommended differentiation angle.
@@ -203,7 +205,10 @@ No API key, no rate limits worth worrying about for a single research session. U
 3. Cross-reference TVL against fees/revenue and 7d/30d growth. **TVL alone is not enough.** A $10B protocol is trusted but hard to compete with. A $10M protocol growing 50% monthly is the opportunity.
 4. Flag protocols with **declining TVL** — losing trust or users.
 5. For each protocol the user might integrate with, check whether it has an SDK, public API, or composable contracts. No SDK = harder integration = note it.
-6. Cross-check with the Zerion CLI for live wallet-side reality: `zerion positions <some-active-defi-wallet> --positions defi --chain solana` to see what real users actually hold.
+6. Cross-check with the Zerion CLI for live wallet-side reality:
+   - `zerion analyze <known-defi-whale-or-treasury>` to see whether the protocol shows up in real portfolios at all
+   - `zerion positions <addr> --positions defi --chain solana` for the exact protocols/pools they hold
+   - `zerion history <addr> --limit 25` to confirm the wallet is actively rotating into/out of those positions, not stale
 7. Produce a local artifact (`idea-defi-research-YYYYMMDD-HHMMSS.md`) with: top protocols (ranked by TVL with 7d delta), opportunities (gaps + underserved niches), recommended integration targets, and a market snapshot (total Solana TVL, top category, fastest-growing category).
 
 ### Decision points
@@ -230,9 +235,9 @@ Don't leave the result only in chat — the user will want to re-read and share.
 
 | When you want… | Use |
 |----------------|-----|
-| Live wallet-side evidence for an idea (who actually holds what) | `zerion analyze <addr>` / `zerion positions <addr> --positions defi` |
-| Token reference (does this symbol/contract exist?) | `zerion search <query>` |
-| Live supported-chain catalog | `zerion chains` |
+| One-shot validation: portfolio + positions + activity for a comparable project | `zerion analyze <addr>` |
+| Confirm a wallet/treasury is actively used (not stale) | `zerion history <addr> --limit 25` |
+| See exactly which DeFi protocols/pools a wallet holds | `zerion positions <addr> --positions defi` |
 | Track a comparable protocol's treasury over time | `zerion watch <addr> --name <label>` then `zerion portfolio --watch <label>` |
 | Move money once a validated idea ships | `zerion-trading` skill (`swap`, `bridge`, `send`) |
 | Build an autonomous-trading bot from a validated DeFi thesis | `zerion-agent-management` (agent tokens + policies) |
